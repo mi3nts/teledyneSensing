@@ -5,7 +5,7 @@ contains firmware to collect data from teledyne sensors
 ```(base) lakitha@MacBook-Pro-107 teledyneSensing % curl -X GET http://192.168.31.9:8180/api/taglist```
 
 Results in 
-{
+```{
   "group": "",
   "tags": [
     {
