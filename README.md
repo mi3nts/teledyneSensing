@@ -1,6 +1,17 @@
 # teledyneSensing
 contains firmware to collect data from teledyne sensors
 
+# Chamber 
+- Can I control the power of T,H
+
+# T640 
+- Can I get the time of the latest reading
+- Do I need the SW for the API data collection
+- 
+
+  
+
+
 # T640 
 ```(base) lakitha@MacBook-Pro-107 teledyneSensing % curl -X GET http://192.168.31.9:8180/api/taglist```
 
