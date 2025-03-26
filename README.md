@@ -9,8 +9,125 @@ contains firmware to collect data from teledyne sensors
 - Do I need the SW for the API data collection
 
   
+
 # T640 
+
+# Teledyne T640 MODBUS Register Table
+
+## 📥 Discrete Inputs
+
+| Address | Description                           |
+|---------|---------------------------------------|
+| 0       | BOX_TEMP_WARNING                      |
+| 1       | SAMPLE_FLOW_WARNING                   |
+| 2       | INTERNAL_SERIAL_TIMEOUT               |
+| 3       | SYSTEM_RESET_WARNING                  |
+| 4       | SYS_OK_WARN                           |
+| 5       | SAMPLE_TEMPERATURE_WARNING            |
+| 6       | BYPASS_FLOW_WARNING                   |
+| 7       | SYSTEM_FAULT_WARNING                  |
+| 8       | Currently Unused                      |
+
+## 📊 Input Registers
+
+| Address | Description                                           |
+|---------|-------------------------------------------------------|
+| 0       | Pump Tachometer Reading                               |
+| 2       | Total particles in Amplitude histogram                |
+| 4       | Total particles in Length distribution                |
+| 6       | Real-time PM10 concentration                          |
+| 8       | Real-time PM2.5 concentration                         |
+| 10      | Real-time PM10-2.5 concentration                      |
+| 12      | Real-time PM10 standardized concentration             |
+| 14      | PM10 1Hr Rolling Average                              |
+| 16      | PM2.5 1Hr Rolling Average                             |
+| 18      | PM10-2.5 1Hr Rolling Average                          |
+| 20      | PM10 12Hr Rolling Average                             |
+| 22      | PM2.5 12Hr Rolling Average                            |
+| 24      | PM10-2.5 12Hr Rolling Average                         |
+| 26      | PM10 24Hr Rolling Average                             |
+| 28      | PM2.5 24Hr Rolling Average                            |
+| 30      | PM10-2.5 24Hr Rolling Average                         |
+| 32      | LED Temperature                                       |
+| 34      | Ambient Pressure                                      |
+| 36      | Humidity Sensor Reading                               |
+| 38      | Box Temperature                                       |
+| 40      | Ambient Temperature Probe                             |
+| 42      | ASC Tube Jacket Temperature                           |
+| 44      | Sample Stream Temp at RH Sensor                       |
+| 46      | Sample Flow (5 lpm)                                   |
+| 48      | Bypass Flow (11.67 lpm)                               |
+| 50      | Total Flow                                            |
+| 52      | Signal Length                                         |
+| 54      | P3 Value                                              |
+| 56      | Pump Duty Cycle / PWM                                 |
+| 58      | Proportional Valve Duty Cycle / PWM                   |
+| 60      | ASC Heater Duty Cycle                                 |
+| 62      | Real-time PM2.5 standardized concentration            |
+| 64      | Real-time PM1 concentration                           |
+| 66      | Real-time PM1 standardized concentration              |
+| 68      | PM1 standardized 1Hr rolling average                  |
+| 70      | PM2.5 standardized 1Hr rolling average                |
+| 72      | PM10 standardized 1Hr rolling average                 |
+| 74      | PM1 standardized 12Hr rolling average                 |
+| 76      | PM2.5 standardized 12Hr rolling average               |
+| 78      | PM10 standardized 12Hr rolling average                |
+| 80      | PM1 standardized 24Hr rolling average                 |
+| 82      | PM2.5 standardized 24Hr rolling average               |
+| 84      | PM10 standardized 24Hr rolling average                |
+| 86      | Span Deviation                                        |
+| 88      | Span Dev Track (48-hr rolling average)                |
+| 90      | PM1 1Hr rolling average                               |
+| 92      | PM1 12Hr rolling average                              |
+| 94      | PM1 24Hr rolling average                              |
+| 96      | Real-time PMtot concentration                         |
+| 98      | Real-time PMtot standardized concentration            |
+| 100     | PMtot 1Hr rolling average                             |
+| 102     | PMtot standardized 1Hr rolling average                |
+| 104     | PMtot 12Hr rolling average                            |
+| 106     | PMtot standardized 12Hr rolling average               |
+| 108     | PMtot 24Hr rolling average                            |
+| 110     | PMtot standardized 24Hr rolling average               |
+| 112     | Sample Flow CV 24Hr rolling average                   |
+| 114     | Bypass Flow CV 24Hr rolling average                   |
+| 116     | Total Flow CV 24Hr rolling average                    |
+| 118     | Real-time total particle number concentration         |
+
+## ⚙️ Holding Registers
+
+| Address | Description                                      |
+|---------|--------------------------------------------------|
+| 0       | PMT voltage setting - DAC counts                |
+| 2       | PMT Offset Adjustment                            |
+| 4       | PMT HVPS setting during calibration              |
+| 6       | 5-LPM Flowmeter Calibration Slope               |
+| 8       | Bypass Flowmeter Calibration Slope              |
+| 10      | Pressure Sensor Calibration Slope               |
+| 12      | Sample RH Setpoint                               |
+| 14      | Sample Flow Setpoint                             |
+| 16      | Bypass Flow Setpoint                             |
+| 18      | RH Sensor Slope                                  |
+| 20      | KS10 – Non-EPA PM10 Slope                        |
+| 22      | KS2.5 – Non-EPA PM2.5 Slope                      |
+| 24      | KS1 – Non-EPA PM1 Slope                          |
+| 26      | KO10 – Non-EPA PM10 Offset                       |
+| 28      | KO2.5 – Non-EPA PM2.5 Offset                     |
+| 30      | KO1 – Non-EPA PM1 Offset                         |
+
+## 🔁 Coil Registers
+
+| Address | Description                     |
+|---------|---------------------------------|
+| 0       | Control relay 36                |
+| 1       | Control relay 37                |
+| 2       | Control relay 38                |
+| 3       | Control relay 39                |
+| 4       | Control maintenance mode toggle |
+"""
+
 ```(base) lakitha@MacBook-Pro-107 teledyneSensing % curl -X GET http://192.168.31.9:8180/api/taglist```
+
+
 
 Results in 
 ```{
@@ -2070,4 +2187,21 @@ Results in
     }
   ]
 }
+```
+## MODBUS Readings 
+
+To read modbus readings 
+
+```python
+import struct
+
+reg = client.read_input_registers(8, 2, unit=1)
+if not reg.isError():
+    # Combine 2x16-bit registers into a single 32-bit float (big endian)
+    decoder = struct.unpack('>f', struct.pack('>HH', *reg.registers))[0]
+    print("PM2.5 Real-time:", decoder, "µg/m³")
+```
+
+
+
 
