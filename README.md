@@ -124,6 +124,116 @@ contains firmware to collect data from teledyne sensors
 | 3       | Control relay 39                |
 | 4       | Control maintenance mode toggle |
 """
+Sample Output 
+
+```
+============================================================
+       Teledyne API T640 Status @ 2025-03-27 16:22:05       
+============================================================
+============================================================
+                     Discrete Warnings                      
+============================================================
+BOX_TEMP_WARNING                         OFF
+SAMPLE_FLOW_WARNING                      OFF
+INTERNAL_SERIAL_TIMEOUT                  OFF
+SYSTEM_RESET_WARNING                     ON
+SYS_OK_WARN                              OFF
+SAMPLE_TEMPERATURE_WARNING               OFF
+BYPASS_FLOW_WARNING                      OFF
+SYSTEM_FAULT_WARNING                     OFF
+============================================================
+             Environmental and PM Measurements              
+============================================================
+PM10 Real-time                                2.996
+PM2.5 Real-time                               2.419
+PM10-2.5 Real-time                            0.577
+PM10 Std                                      3.050
+PM10 1Hr Avg                                  4.703
+PM2.5 1Hr Avg                                 3.505
+PM10-2.5 1Hr Avg                              1.201
+PM10 12Hr Avg                                 0.000
+PM2.5 12Hr Avg                                0.000
+PM10-2.5 12Hr Avg                             0.000
+PM10 24Hr Avg                                 0.000
+PM2.5 24Hr Avg                                0.000
+PM10-2.5 24Hr Avg                             0.000
+LED Temp                                     34.079
+Ambient Pressure                             99.068
+Humidity                                     45.610
+Box Temp                                     26.536
+Ambient Temp                                 23.644
+ASC Tube Temp                                 0.000
+RH Sensor Temp                               24.559
+Sample Flow (5lpm)                            5.027
+Bypass Flow (11.67lpm)                        0.000
+Total Flow                                    5.027
+Signal Length                                63.171
+P3 Value                                     48.000
+Pump Duty Cycle                              30.538
+Valve Duty Cycle                              0.000
+ASC Heater Duty                             100.000
+PM2.5 Std                                     2.462
+PM1                                           2.302
+PM1 Std                                       2.343
+PM1 1Hr Std                                   3.494
+PM2.5 1Hr Std                                 3.573
+PM10 1Hr Std                                  4.793
+PM1 12Hr Std                                  0.000
+PM2.5 12Hr Std                                0.000
+PM10 12Hr Std                                 0.000
+PM1 24Hr Std                                  0.000
+PM2.5 24Hr Std                                0.000
+PM10 24Hr Std                                 0.000
+Span Deviation                                0.000
+Span Dev Track                                0.000
+PM1 1Hr Avg                                   3.439
+PM1 12Hr Avg                                  0.000
+PM1 24Hr Avg                                  0.000
+PMtot                                         0.000
+PMtot Std                                     0.000
+PMtot 1Hr                                     0.000
+PMtot 1Hr Std                                 0.000
+PMtot 12Hr                                    0.000
+PMtot 12Hr Std                                0.000
+PMtot 24Hr                                    0.000
+PMtot 24Hr Std                                0.000
+Sample Flow CV                                0.000
+Bypass Flow CV                                0.000
+Total Flow CV                                 0.000
+Total Particle Count                         62.529
+============================================================
+               Calibration and Configuration                
+============================================================
+PMT Voltage                                   0.000
+PMT Offset                                    0.000
+PMT HVPS                                      0.000
+5LPM Flow Cal                                 0.992
+Bypass Flow Cal                               1.000
+Pressure Cal                                  1.008
+RH Setpoint                                  35.000
+Sample Flow Setpoint                          5.000
+Bypass Flow Setpoint                         11.670
+RH Sensor Slope                               1.000
+KS10 PM10 Slope                               1.000
+KS2.5 PM2.5 Slope                             1.000
+KS1 PM1 Slope                                 1.000
+KO10 PM10 Offset                              0.000
+KO2.5 PM2.5 Offset                            0.000
+KO1 PM1 Offset                                0.000
+============================================================
+                       Control Coils                        
+============================================================
+Control Relay 36                         OFF
+Control Relay 37                         OFF
+Control Relay 38                         OFF
+Control Relay 39                         OFF
+Maintenance Mode                         OFF
+
+
+
+```
+
+
 
 ```(base) lakitha@MacBook-Pro-107 teledyneSensing % curl -X GET http://192.168.31.9:8180/api/taglist```
 
