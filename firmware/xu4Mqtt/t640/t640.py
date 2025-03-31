@@ -20,7 +20,6 @@ def decode_float(regs, index):
 class T640:
     def __init__(self, host: str, port: int = 502, unit_id=1):
         
-        client = ModbusTcpClient("192.168.31.9", port=502)
         
         self.client = ModbusTcpClient(host, port=port)
         self.unit_id = unit_id
@@ -396,3 +395,75 @@ class T640:
             print("[Error] Input Registers:", e)
 
         return False, None            
+    
+    def read_holding_registers(self):
+        dateTime = datetime.now(timezone.utc)
+        try:
+            result = self.client.read_holding_registers(0, 32, unit=self.unit_id)
+            # PMT Voltage                                   0.000
+            # PMT Offset                                    0.000
+            # PMT HVPS                                      0.000
+            # 5LPM Flow Cal                                 0.992
+            # Bypass Flow Cal                               1.000
+            # Pressure Cal                                  1.008
+            # RH Setpoint                                  35.000
+            # Sample Flow Setpoint                          5.000
+            # Bypass Flow Setpoint                         11.670
+            # RH Sensor Slope                               1.000
+            # KS10 PM10 Slope                               1.000
+            # KS2.5 PM2.5 Slope                             1.000
+            # KS1 PM1 Slope                                 1.000
+            # KO10 PM10 Offset                              0.000
+            # KO2.5 PM2.5 Offset                            0.000
+            # KO1 PM1 Offset                                0.000
+
+
+            if not result.isError():
+                regs = result.registers
+                self.pmtVoltage                     = decode_float(regs, 0)
+                self.pmtOffset                      = decode_float(regs, 2)
+                self.pmtHVPS                        = decode_float(regs, 4)
+                self.fiveLPMFlowCal                 = decode_float(regs, 6)
+                self.bypassFlowCal                  = decode_float(regs, 8)
+                self.pressureCal                    = decode_float(regs, 10)
+                self.rhSetpoint                     = decode_float(regs, 12)
+                self.sampleFlowSetpoint             = decode_float(regs, 14)
+                self.bypassFlowSetpoint             = decode_float(regs, 16)
+                self.rhSensorSlope                  = decode_float(regs, 18)
+                self.ks10PM10Slope                  = decode_float(regs, 20)
+                self.ks2_5PM2_5Slope                = decode_float(regs, 22)
+                self.ks1PM1Slope                    = decode_float(regs, 24)
+                self.ko10PM10Offset                 = decode_float(regs, 26)
+                self.ko2_5PM2_5Offset               = decode_float(regs, 28)
+                self.ko1PM1Offset                   = decode_float(regs, 30)
+                
+                calibrationDict              = OrderedDict([
+                    ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("pmtVoltage"            , self.pmtVoltage),
+                    ("pmtOffset"             , self.pmtOffset),
+                    ("pmtHVPS"               , self.pmtHVPS),
+                    ("fiveLPMFlowCal"        , self.fiveLPMFlowCal),
+                    ("bypassFlowCal"         , self.bypassFlowCal),
+                    ("pressureCal"           , self.pressureCal),
+                    ("rhSetpoint"            , self.rhSetpoint),
+                    ("sampleFlowSetpoint"    , self.sampleFlowSetpoint),
+                    ("bypassFlowSetpoint"    , self.bypassFlowSetpoint),
+                    ("rhSensorSlope"         , self.rhSensorSlope),
+                    ("ks10PM10Slope"         , self.ks10PM10Slope),
+                    ("ks2_5PM2_5Slope"       , self.ks2_5PM2_5Slope),
+                    ("ks1PM1Slope"           , self.ks1PM1Slope),
+                    ("ko10PM10Offset"        , self.ko10PM10Offset),
+                    ("ko2_5PM2_5Offset"      , self.ko2_5PM2_5Offset),
+                    ("ko1PM1Offset"          , self.ko1PM1Offset)
+                ])
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CALV", calibrationDict )
+                
+
+                return True, {
+                    self.holding_float_fields[i]: decode_float(regs, i)
+                    for i in sorted(self.holding_float_fields.keys())
+                }
+        except ModbusException as e:
+            print("[Error] Input Registers:", e)
+
+        return False, None                

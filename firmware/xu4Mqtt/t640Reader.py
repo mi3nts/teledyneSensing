@@ -12,3 +12,5 @@ if __name__ == "__main__":
     print(monitor.read_coils())
     time.sleep(1)
     print(monitor.read_input_registers())
+    time.sleep(1)
+    print(monitor.read_holding_registers())    
