@@ -113,6 +113,7 @@ try:
         # Coil Registers
         try:
             result = client.read_coils(0, len(coil_labels), unit=unit_id)
+            print(result.bits)
             if not result.isError():
                 print_section("Control Coils")
                 for i, label in enumerate(coil_labels):
