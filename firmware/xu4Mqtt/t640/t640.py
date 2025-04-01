@@ -6,8 +6,8 @@ import time
 from datetime import datetime, timezone
 import os
 from collections import OrderedDict
-
-
+import requests
+import json 
 from mintsXU4 import mintsSensorReader as mSR
 
 
@@ -18,13 +18,15 @@ def decode_float(regs, index):
 
 
 class T640:
-    def __init__(self, host: str, port: int = 502, unit_id=1):
+    def __init__(self, host: str, port: int = 502, api_port: int = 8180 ,unit_id=1):
         
         
         self.client = ModbusTcpClient(host, port=port)
         self.unit_id = unit_id
         self.sensorIDPreModbus = "T640MB001"
+        
         self.sensorIDPreAPI    = "T640API001"
+        self.apiURL            = "http://" + host +":"+ str(api_port) + "/api/taglist"  
 
         self.discrete_labels = [
             "Box Temperature Warning",
@@ -226,9 +228,9 @@ class T640:
                 self.ambientTemp                    = decode_float(regs, 40)
                 self.ascTubeTemp                    = decode_float(regs, 42)
                 self.rhSensorTemp                   = decode_float(regs, 44)
-                self.sampleFlow                     = decode_float(regs, 46)
-                self.bypassFlow                     = decode_float(regs, 48)
-                self.totalFlow                      = decode_float(regs, 50)
+                self.sampleFlowMB                   = decode_float(regs, 46)
+                self.bypassFlowMB                   = decode_float(regs, 48)
+                self.totalFlowMB                    = decode_float(regs, 50)
                 self.signalLength                   = decode_float(regs, 52)
                 self.p3Value                        = decode_float(regs, 54)
                 self.pumpDuty                       = decode_float(regs, 56)
@@ -262,7 +264,7 @@ class T640:
                 self.sampleFlowCV                   = decode_float(regs, 112)
                 self.bypassFlowCV                   = decode_float(regs, 114)
                 self.totalFlowCV                    = decode_float(regs, 116)
-                self.totalParticleCount             = decode_float(regs, 118)
+                self.totalParticleConc             = decode_float(regs, 118)
 
                 realtimePmDict                      = OrderedDict([
                     ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -341,7 +343,7 @@ class T640:
                     ("pm1"     , self.pm1_24hrStandardizedAvg),
                     ("pm2_5"   , self.pm2_5_24hrStandardizedAvg),
                     ("pm10"    , self.pm10_24hrStandardizedAvg),
-                    ("pmTotol" , self.pmtot_24hrStandardizedAvg)
+                    ("pmTotal" , self.pmtot_24hrStandardizedAvg)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S24HPM",  pm24hrStandardizedDict )
 
@@ -350,7 +352,7 @@ class T640:
                     ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("totalAmpHistParticles" , self.totalAmpHistParticles),
                     ("totalLenDistParticles" , self.totalLenDistParticles),
-                    ("totalParticleCount"    , self.totalParticleCount)
+                    ("totalParticleConc"     , self.totalParticleConc)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PHC",  particleHistogramCounts )
 
@@ -359,10 +361,10 @@ class T640:
                 climateDict                          = OrderedDict([
                     ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("ledTemp"            , self.ledTemp),
-                    ("ambientPressure"    , self.ambientPressure),
+                    ("pressure"           , self.ambientPressure),
                     ("humidity"           , self.humidity),
                     ("boxTemp"            , self.boxTemp),
-                    ("ambientTemp"        , self.ambientTemp),
+                    ("temperature"        , self.ambientTemp),
                     ("ascTubeTemp"        , self.ascTubeTemp),
                     ("rhSensorTemp"       , self.rhSensorTemp)
                 ])
@@ -373,9 +375,9 @@ class T640:
                 pumpAndFlowDict = OrderedDict([
                     ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("pumpTachometer"     , self.pumpTachometer),
-                    ("sampleFlow"         , self.sampleFlow),
-                    ("bypassFlow"         , self.bypassFlow),
-                    ("totalFlow"          , self.totalFlow),
+                    ("sampleFlow"         , self.sampleFlowMB),
+                    ("bypassFlow"         , self.bypassFlowMB),
+                    ("totalFlow"          , self.totalFlowMB),
                     ("signalLength"       , self.signalLength),
                     ("p3Value"            , self.p3Value),
                     ("pumpDuty"           , self.pumpDuty),
@@ -467,3 +469,197 @@ class T640:
             print("[Error] Input Registers:", e)
 
         return False, None                
+    
+    def _to_camel_case(self, s):
+        """Convert tag name from UPPER_SNAKE_CASE to camelCase."""
+        s = s.replace('.', '_') 
+        parts = s.lower().split('_')
+        return parts[0] + ''.join(word.capitalize() for word in parts[1:])
+
+    def _normalize_value(self, value):
+        if isinstance(value, bool):
+            return int(value)
+        elif isinstance(value, (int, float)):
+            return value
+        elif isinstance(value, str):
+            val = value.strip().lower()
+            if val == "true":
+                return 1
+            elif val == "false":
+                return 0
+        try:
+            # Try converting to float or int if it's a numeric string
+            if '.' in str(value):
+                return float(value)
+            return int(value)
+        except (ValueError, TypeError):
+            return value
+
+
+    def read_api(self):
+
+        response = requests.get(self.apiURL)
+        if response.status_code == 200:
+            data = response.json()
+            for tag in data.get("tags", []):
+                name = tag.get("name", "")
+                raw_value = tag.get("value", "")
+                camel_name = self._to_camel_case(name)
+
+                # Skip tags that start with digits (e.g., '1MIN-DATA')
+                if name and name[0].isdigit():
+                    continue
+
+                # Special case for opcDustHistogram
+                if camel_name == "opcDustHistogram":
+                    if isinstance(raw_value, str):
+                        try:
+                            values = [int(float(v.strip())) for v in raw_value.split(',')]
+                            for i, val in enumerate(values):
+                                bin_name = f"bin{i:03d}"
+                                setattr(self, bin_name, val)
+                                print(f"self.{bin_name} = {val}")
+                        except Exception as e:
+                            print(f"Failed to parse histogram: {e}")
+                    continue  # Skip setting opcDustHistogram as a string
+                            
+                # Normalize the value (convert strings "True"/"False" to 1/0, etc.)
+                normalized_value = self._normalize_value(raw_value)
+
+                # Save to camelCase class attribute
+                setattr(self, camel_name, normalized_value)
+                # print(f"self.{camel_name} = {repr(normalized_value)}")
+
+            # At this point, the data is attached to sensors 
+            dateTime  = datetime.now(timezone.utc)
+
+            realtimePmDict                      = OrderedDict([
+                ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"      , self.pm1Conc),
+                ("pm2_5"    , self.pm25Conc),
+                ("pm2_5to10", self.pmcConc),
+                ("pm10"     , self.pm10Conc),
+                ("pmTotal"  , self.pmtotConc)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "RTPM", realtimePmDict )
+            
+            stdRealtimePmDict = OrderedDict([
+                ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"     , self.pm1stpConc),
+                ("pm2_5"   , self.pm25stpConc),
+                ("pm10"    , self.pm10stpConc),
+                ("pmTotal" , self.pmtotstpConc)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "STDRTPM", stdRealtimePmDict  )
+
+
+            pm1hrRollingDict                    = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"      , self.pm11hrAvg),
+                ("pm2_5"    , self.pm251hrAvg),
+                ("pm2_5to10", self.pmc1hrAvg ),
+                ("pm10"     , self.pm101hrAvg),
+                ("pmTotal"  , self.pmtot1hrAvg),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R1HPM",  pm1hrRollingDict )
+
+
+            pm12hrRollingDict = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"      , self.pm112hrAvg),
+                ("pm2_5"    , self.pm2512hrAvg),
+                ("pm2_5to10", self.pmc12hrAvg ),
+                ("pm10"     , self.pm1012hrAvg),
+                ("pmTotal"  , self.pmtot12hrAvg),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R12HPM",  pm12hrRollingDict )
+
+
+            pm24hrRollingDict = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"      , self.pm124hrAvg),
+                ("pm2_5"    , self.pm2524hrAvg),
+                ("pm2_5to10", self.pmc24hrAvg ),
+                ("pm10"     , self.pm1024hrAvg),
+                ("pmTotal"  , self.pmtot24hrAvg),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R24HPM",  pm24hrRollingDict )
+
+            pm1hrStandardizedDict = OrderedDict([
+                ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"     , self.pm1stp1hrAvg),
+                ("pm2_5"   , self.pm25stp1hrAvg),
+                ("pm10"    , self.pm10stp1hrAvg),
+                ("pmTotal" , self.pmtotstp1hrAvg)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S1HPM",  pm1hrStandardizedDict )
+
+            pm12hrStandardizedDict = OrderedDict([
+                ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"     , self.pm1stp12hrAvg),
+                ("pm2_5"   , self.pm25stp12hrAvg),
+                ("pm10"    , self.pm10stp12hrAvg),
+                ("pmTotal" , self.pmtotstp12hrAvg)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S12HPM",  pm12hrStandardizedDict )
+
+            pm24hrStandardizedDict = OrderedDict([
+                ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pm1"     , self.pm1stp24hrAvg),
+                ("pm2_5"   , self.pm25stp24hrAvg),
+                ("pm10"    , self.pm10stp24hrAvg),
+                ("pmTotal" , self.pmtotstp24hrAvg)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S24HPM",  pm24hrStandardizedDict )
+
+
+            particleHistogramCounts    = OrderedDict([
+                ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("totalAmpHistParticles" , self.opcRtAmplitudeCounts),
+                ("totalLenDistParticles" , self.opcRtLengthCounts),
+                ("totalParticleConc"     , self.numConc)
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "PHC",  particleHistogramCounts )
+
+
+
+            climateDict                          = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("ledTemp"            , self.opcRtLedTemp),
+                ("pressure"           , self.aiSamplePressureUnits),
+                ("humidity"           , self.opcRtHumidity),
+                ("boxTemp"            , self.opcRtBoxTemp),
+                ("temperature"        , self.opcRtOutsideTemp),
+                ("rhSensorTemp"       , self.opcRtSampTemp)
+            ])
+
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "CLMA",  climateDict )
+            # ASC Temperature is not given on the API 
+
+            pumpAndFlowDict = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("pumpTachometer"     , self.opcRtPumpSpeed),
+                ("sampleFlow5"        , self.aiSampleFlow5),             
+                ("bypassFlow"         , self.aiSampleFlow11),  
+                ("totalFlow"          , self.totalFlow),
+                ("signalLength"       , self.opcRtSlValue),
+                ("p3Value"            , self.opcSvP3Value),
+                ("pumpDuty"           , self.opcRtPwmPump),
+                ("valveDuty"          , self.opcRtPwmValve),
+                ("ascHeaterDuty"      , self.opcRtHeaterDuty),
+                ("sampleFlowCV"       , self.flow5Cv24hrAvg),
+                ("bypassFlowCV"       , self.flow11Cv24hrAvg),
+                ("totalFlowCV"        , self.flowtotCv24hrAvg),
+            ])
+
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "PV",  pumpAndFlowDict )
+            
+
+
+
+
+
+
+
+        else:
+            print(f"Failed to fetch data. Status code: {response.status_code}")
