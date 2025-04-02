@@ -654,9 +654,152 @@ class T640:
 
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "PV",  pumpAndFlowDict )
             
+            # STRING VARIABLES svCom1Protocol, svCom1Parity, svCom2Parity
+            # svCom2HandshakingMode, 
 
+            svComDict = OrderedDict([
+                ("svCom1Protocol"                    , self.svCom1Protocol),
+                ("svCom1ModemInitString"             , self.svCom1ModemInitString),
+                ("svCom1Baudrate"                    , self.svCom1Baudrate),
+                ("svCom1Parity"                      , self.svCom1Parity),
+                ("svCom1Databits"                    , self.svCom1Databits),
+                ("svCom1Stopbits"                    , self.svCom1Stopbits),
+                ("svCom2Protocol"                    , self.svCom2Protocol),
+                ("svCom2ModemInitString"             , self.svCom2ModemInitString),
+                ("svCom2Baudrate"                    , self.svCom2Baudrate),
+                ("svCom2Parity"                      , self.svCom2Parity),
+                ("svCom2Databits"                    , self.svCom2Databits),
+                ("svCom2Stopbits"                    , self.svCom2Stopbits),
+                ("svCom2ModemConnection"             , self.svCom2ModemConnection),
+                ("svCom2EnableQuietMode"             , self.svCom2EnableQuietMode),
+                ("svCom2EnableSecurity"              , self.svCom2EnableSecurity),
+                ("svCom2EnableMultidrop"             , self.svCom2EnableMultidrop),
+                ("svCom2EnableRs485"                 , self.svCom2EnableRs485),
+                ("svCom2HandshakingMode"             , self.svCom2HandshakingMode),
+                ("svCom2EnableCommandPromptDisplay"  , self.svCom2EnableCommandPromptDisplay),
+                ("svCom2DisableEchoLineEditing"      , self.svCom2DisableEchoLineEditing),
+                ("svCom2DisableHardwareErrorChecking", self.svCom2DisableHardwareErrorChecking),
+                ("svCom2EnableHardwareFifo"          , self.svCom2EnableHardwareFifo),
+                ("svCom2Initialize"                  , self.svCom2Initialize),
+                ("svTcp1Initialize"                  , self.svTcp1Initialize),
+                ("svTcp1Portnum"                     , self.svTcp1Portnum),
+                ("svTcp1EnableSecurity"              , self.svTcp1EnableSecurity),
+                ("svTcp1EnableCommandPromptDisplay"  , self.svTcp1EnableCommandPromptDisplay),
+                ("svTcp2Initialize"                  , self.svTcp2Initialize),
+                ("svTcp2Portnum"                     , self.svTcp2Portnum),
+            ])
 
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SV",svComDict)
+            
 
+            binDict = OrderedDict([
+                ("bin000", self.bin000), ("bin001", self.bin001), ("bin002", self.bin002), ("bin003", self.bin003), ("bin004", self.bin004),
+                ("bin005", self.bin005), ("bin006", self.bin006), ("bin007", self.bin007), ("bin008", self.bin008), ("bin009", self.bin009),
+                ("bin010", self.bin010), ("bin011", self.bin011), ("bin012", self.bin012), ("bin013", self.bin013), ("bin014", self.bin014),
+                ("bin015", self.bin015), ("bin016", self.bin016), ("bin017", self.bin017), ("bin018", self.bin018), ("bin019", self.bin019),
+                ("bin020", self.bin020), ("bin021", self.bin021), ("bin022", self.bin022), ("bin023", self.bin023), ("bin024", self.bin024),
+                ("bin025", self.bin025), ("bin026", self.bin026), ("bin027", self.bin027), ("bin028", self.bin028), ("bin029", self.bin029),
+                ("bin030", self.bin030), ("bin031", self.bin031), ("bin032", self.bin032), ("bin033", self.bin033), ("bin034", self.bin034),
+                ("bin035", self.bin035), ("bin036", self.bin036), ("bin037", self.bin037), ("bin038", self.bin038), ("bin039", self.bin039),
+                ("bin040", self.bin040), ("bin041", self.bin041), ("bin042", self.bin042), ("bin043", self.bin043), ("bin044", self.bin044),
+                ("bin045", self.bin045), ("bin046", self.bin046), ("bin047", self.bin047), ("bin048", self.bin048), ("bin049", self.bin049),
+                ("bin050", self.bin050), ("bin051", self.bin051), ("bin052", self.bin052), ("bin053", self.bin053), ("bin054", self.bin054),
+                ("bin055", self.bin055), ("bin056", self.bin056), ("bin057", self.bin057), ("bin058", self.bin058), ("bin059", self.bin059),
+                ("bin060", self.bin060), ("bin061", self.bin061), ("bin062", self.bin062), ("bin063", self.bin063), ("bin064", self.bin064),
+                ("bin065", self.bin065), ("bin066", self.bin066), ("bin067", self.bin067), ("bin068", self.bin068), ("bin069", self.bin069),
+                ("bin070", self.bin070), ("bin071", self.bin071), ("bin072", self.bin072), ("bin073", self.bin073), ("bin074", self.bin074),
+                ("bin075", self.bin075), ("bin076", self.bin076), ("bin077", self.bin077), ("bin078", self.bin078), ("bin079", self.bin079),
+                ("bin080", self.bin080), ("bin081", self.bin081), ("bin082", self.bin082), ("bin083", self.bin083), ("bin084", self.bin084),
+                ("bin085", self.bin085), ("bin086", self.bin086), ("bin087", self.bin087), ("bin088", self.bin088), ("bin089", self.bin089),
+                ("bin090", self.bin090), ("bin091", self.bin091), ("bin092", self.bin092), ("bin093", self.bin093), ("bin094", self.bin094),
+                ("bin095", self.bin095), ("bin096", self.bin096), ("bin097", self.bin097), ("bin098", self.bin098), ("bin099", self.bin099),
+                ("bin100", self.bin100), ("bin101", self.bin101), ("bin102", self.bin102), ("bin103", self.bin103), ("bin104", self.bin104),
+                ("bin105", self.bin105), ("bin106", self.bin106), ("bin107", self.bin107), ("bin108", self.bin108), ("bin109", self.bin109),
+                ("bin110", self.bin110), ("bin111", self.bin111), ("bin112", self.bin112), ("bin113", self.bin113), ("bin114", self.bin114),
+                ("bin115", self.bin115), ("bin116", self.bin116), ("bin117", self.bin117), ("bin118", self.bin118), ("bin119", self.bin119),
+                ("bin120", self.bin120), ("bin121", self.bin121), ("bin122", self.bin122), ("bin123", self.bin123), ("bin124", self.bin124),
+                ("bin125", self.bin125), ("bin126", self.bin126), ("bin127", self.bin127), ("bin128", self.bin128), ("bin129", self.bin129),
+                ("bin130", self.bin130), ("bin131", self.bin131), ("bin132", self.bin132), ("bin133", self.bin133), ("bin134", self.bin134),
+                ("bin135", self.bin135), ("bin136", self.bin136), ("bin137", self.bin137), ("bin138", self.bin138), ("bin139", self.bin139),
+                ("bin140", self.bin140), ("bin141", self.bin141), ("bin142", self.bin142), ("bin143", self.bin143), ("bin144", self.bin144),
+                ("bin145", self.bin145), ("bin146", self.bin146), ("bin147", self.bin147), ("bin148", self.bin148), ("bin149", self.bin149),
+                ("bin150", self.bin150), ("bin151", self.bin151), ("bin152", self.bin152), ("bin153", self.bin153), ("bin154", self.bin154),
+                ("bin155", self.bin155), ("bin156", self.bin156), ("bin157", self.bin157), ("bin158", self.bin158), ("bin159", self.bin159),
+                ("bin160", self.bin160), ("bin161", self.bin161), ("bin162", self.bin162), ("bin163", self.bin163), ("bin164", self.bin164),
+                ("bin165", self.bin165), ("bin166", self.bin166), ("bin167", self.bin167), ("bin168", self.bin168), ("bin169", self.bin169),
+                ("bin170", self.bin170), ("bin171", self.bin171), ("bin172", self.bin172), ("bin173", self.bin173), ("bin174", self.bin174),
+                ("bin175", self.bin175), ("bin176", self.bin176), ("bin177", self.bin177), ("bin178", self.bin178), ("bin179", self.bin179),
+                ("bin180", self.bin180), ("bin181", self.bin181), ("bin182", self.bin182), ("bin183", self.bin183), ("bin184", self.bin184),
+                ("bin185", self.bin185), ("bin186", self.bin186), ("bin187", self.bin187), ("bin188", self.bin188), ("bin189", self.bin189),
+                ("bin190", self.bin190), ("bin191", self.bin191), ("bin192", self.bin192), ("bin193", self.bin193), ("bin194", self.bin194),
+                ("bin195", self.bin195), ("bin196", self.bin196), ("bin197", self.bin197), ("bin198", self.bin198), ("bin199", self.bin199),
+                ("bin200", self.bin200), ("bin201", self.bin201), ("bin202", self.bin202), ("bin203", self.bin203), ("bin204", self.bin204),
+                ("bin205", self.bin205), ("bin206", self.bin206), ("bin207", self.bin207), ("bin208", self.bin208), ("bin209", self.bin209),
+                ("bin210", self.bin210), ("bin211", self.bin211), ("bin212", self.bin212), ("bin213", self.bin213), ("bin214", self.bin214),
+                ("bin215", self.bin215), ("bin216", self.bin216), ("bin217", self.bin217), ("bin218", self.bin218), ("bin219", self.bin219),
+                ("bin220", self.bin220), ("bin221", self.bin221), ("bin222", self.bin222), ("bin223", self.bin223), ("bin224", self.bin224),
+                ("bin225", self.bin225), ("bin226", self.bin226), ("bin227", self.bin227), ("bin228", self.bin228), ("bin229", self.bin229),
+                ("bin230", self.bin230), ("bin231", self.bin231), ("bin232", self.bin232), ("bin233", self.bin233), ("bin234", self.bin234),
+                ("bin235", self.bin235), ("bin236", self.bin236), ("bin237", self.bin237), ("bin238", self.bin238), ("bin239", self.bin239),
+                ("bin240", self.bin240), ("bin241", self.bin241), ("bin242", self.bin242), ("bin243", self.bin243), ("bin244", self.bin244),
+                ("bin245", self.bin245), ("bin246", self.bin246), ("bin247", self.bin247), ("bin248", self.bin248), ("bin249", self.bin249),
+                ("bin250", self.bin250), ("bin251", self.bin251), ("bin252", self.bin252), ("bin253", self.bin253), ("bin254", self.bin254),
+                ("bin255", self.bin255),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "HIST",binDict)
+
+            # Strings
+            # nativeAppState
+            # instrumentMode
+            # instrumentTime
+            # dlFlush
+            # dlLastFlushed
+            # svLanguageSelect
+            # svClockFormat
+            # driverVersion
+            # packageVersion
+            # tagsFlushControl
+            # tagsFlushState
+            # tagsFlushTimestamp
+            # osPlatform
+            # osVersion
+            # cfnetVersion
+            systemStatusDict = OrderedDict([
+                ("nativeAppState"               , self.nativeAppState),
+                ("instrumentMode"               , self.instrumentMode),
+                ("instrumentTime"               , self.instrumentTime),
+                ("dlFlush"                      , self.dlFlush),
+                ("dlLastFlushed"                , self.dlLastFlushed),
+                ("svClockSpeedAdjust"           , self.svClockSpeedAdjust),
+                ("svLanguageSelect"             , self.svLanguageSelect),
+                ("asfMaintenanceModeSoftware"   , self.asfMaintenanceModeSoftware),
+                ("sysWarnMaintenanceMode"       , self.sysWarnMaintenanceMode),
+                ("svLatchWarning"               , self.svLatchWarning),
+                ("svSerialNumber"               , self.svSerialNumber),
+                ("svClockFormat"                , self.svClockFormat),
+                ("svSystemServiceInterval"      , self.svSystemServiceInterval),
+                ("svSystemTotalHours"           , self.svSystemTotalHours),
+                ("svSystemTimeSinceLastInterval", self.svSystemTimeSinceLastInterval),
+                ("svSystemServicePeriodClear"   , self.svSystemServicePeriodClear),
+                ("svDaylightSavingsEnable"      , self.svDaylightSavingsEnable),
+                ("svMachineId"                  , self.svMachineId),
+                ("svDasHoldOff"                 , self.svDasHoldOff),
+                ("asfSystemResetWarning"        , self.asfSystemResetWarning),
+                ("placeholderTagBoolean"        , self.placeholderTagBoolean),
+                ("placeholderTagDouble"         , self.placeholderTagDouble),
+                ("sysWarnReset"                 , self.sysWarnReset),
+                ("warmUpComplete"               , self.warmUpComplete),
+                ("driverVersion"                , self.driverVersion),
+                ("packageVersion"               , self.packageVersion),
+                ("tagsFlushControl"             , self.tagsFlushControl),
+                ("tagsFlushState"               , self.tagsFlushState),
+                ("tagsFlushTimestamp"           , self.tagsFlushTimestamp),
+                ("osPlatform"                   , self.osPlatform),
+                ("osVersion"                    , self.osVersion),
+                ("cfnetVersion"                 , self.cfnetVersion),
+            ])
+
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "INFO",systemStatusDict)
 
 
 

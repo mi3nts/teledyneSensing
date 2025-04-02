@@ -64,6 +64,18 @@ holding_float_fields = {
     26: "KO10 PM10 Offset", 28: "KO2.5 PM2.5 Offset", 30: "KO1 PM1 Offset"
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 # Main Loop
 try:
     while True:
