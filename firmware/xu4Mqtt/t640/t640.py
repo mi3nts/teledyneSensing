@@ -9,7 +9,7 @@ from collections import OrderedDict
 import requests
 import json 
 from mintsXU4 import mintsSensorReader as mSR
-
+import sys 
 
 
 def decode_float(regs, index):
@@ -22,6 +22,10 @@ class T640:
         
         
         self.client = ModbusTcpClient(host, port=port)
+        if not self.client.connect():
+            print(f"Unable to connect to Modbus server at {host}:{port}")
+            sys.exit(1)  # Exit the script with a non-zero exit code        
+        
         self.unit_id = unit_id
         self.sensorIDPreModbus = "T640MB001"
         
@@ -264,7 +268,7 @@ class T640:
                 self.sampleFlowCV                   = decode_float(regs, 112)
                 self.bypassFlowCV                   = decode_float(regs, 114)
                 self.totalFlowCV                    = decode_float(regs, 116)
-                self.totalParticleConc             = decode_float(regs, 118)
+                self.totalParticleConc              = decode_float(regs, 118)
 
                 realtimePmDict                      = OrderedDict([
                     ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -275,7 +279,8 @@ class T640:
                     ("pmTotal"  , self.pmtotRealtime)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "RTPM", realtimePmDict )
-                
+                time.sleep(.1)
+
                 stdRealtimePmDict = OrderedDict([
                     ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("pm1"     , self.pm1StdRealtime),
@@ -284,7 +289,7 @@ class T640:
                     ("pmTotal" , self.pmtotStdRealtime)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "STDRTPM", stdRealtimePmDict  )
-
+                time.sleep(.1)
 
                 pm1hrRollingDict                    = OrderedDict([
                     ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -295,7 +300,7 @@ class T640:
                     ("pmTotal"  , self.pmtot_1hrRollingAvg),
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R1HPM",  pm1hrRollingDict )
-
+                time.sleep(.1)
 
                 pm12hrRollingDict = OrderedDict([
                     ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -306,7 +311,7 @@ class T640:
                     ("pmTotal"  , self.pmtot_12hrRollingAvg),                
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R12HPM",  pm12hrRollingDict )
-
+                time.sleep(.1)
 
                 pm24hrRollingDict = OrderedDict([
                     ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -317,6 +322,7 @@ class T640:
                     ("pmTotal"  , self.pmtot_24hrRollingAvg),
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R24HPM",  pm24hrRollingDict )
+                time.sleep(.1)
 
                 pm1hrStandardizedDict = OrderedDict([
                     ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -326,7 +332,7 @@ class T640:
                     ("pmTotal" , self.pmtot_1hrStandardizedAvg)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S1HPM",  pm1hrStandardizedDict )
-
+                time.sleep(.1)
 
                 pm12hrStandardizedDict = OrderedDict([
                     ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -336,7 +342,7 @@ class T640:
                     ("pmTotal" , self.pmtot_12hrStandardizedAvg)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S12HPM",  pm12hrStandardizedDict )
-
+                time.sleep(.1)
 
                 pm24hrStandardizedDict = OrderedDict([
                     ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -346,7 +352,7 @@ class T640:
                     ("pmTotal" , self.pmtot_24hrStandardizedAvg)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S24HPM",  pm24hrStandardizedDict )
-
+                time.sleep(.1)
 
                 particleHistogramCounts    = OrderedDict([
                     ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -355,8 +361,7 @@ class T640:
                     ("totalParticleConc"     , self.totalParticleConc)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PHC",  particleHistogramCounts )
-
-
+                time.sleep(.1)
 
                 climateDict                          = OrderedDict([
                     ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -370,7 +375,7 @@ class T640:
                 ])
 
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CLM",  climateDict )
-
+                time.sleep(.1)
 
                 pumpAndFlowDict = OrderedDict([
                     ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -389,6 +394,8 @@ class T640:
                 ])
 
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PV",  pumpAndFlowDict )
+                time.sleep(.1)
+                
                 return True, {
                     self.input_float_fields[i]: decode_float(regs, i)
                     for i in sorted(self.input_float_fields.keys())
@@ -459,7 +466,7 @@ class T640:
                     ("ko1PM1Offset"          , self.ko1PM1Offset)
                 ])
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CALV", calibrationDict )
-                
+                time.sleep(.1)                
 
                 return True, {
                     self.holding_float_fields[i]: decode_float(regs, i)
@@ -518,7 +525,7 @@ class T640:
                             for i, val in enumerate(values):
                                 bin_name = f"bin{i:03d}"
                                 setattr(self, bin_name, val)
-                                print(f"self.{bin_name} = {val}")
+                                # print(f"self.{bin_name} = {val}")
                         except Exception as e:
                             print(f"Failed to parse histogram: {e}")
                     continue  # Skip setting opcDustHistogram as a string
@@ -527,9 +534,13 @@ class T640:
                 normalized_value = self._normalize_value(raw_value)
 
                 # Save to camelCase class attribute
-                setattr(self, camel_name, normalized_value)
-                # print(f"self.{camel_name} = {repr(normalized_value)}")
-
+                try:
+                    setattr(self, camel_name, normalized_value)
+                    # print(f"self.{camel_name} = {repr(normalized_value)}")
+                except Exception as e:
+                    print(f"[Warning] Failed to set attribute '{camel_name}': {e}")
+            
+            
             # At this point, the data is attached to sensors 
             dateTime  = datetime.now(timezone.utc)
 
@@ -542,7 +553,8 @@ class T640:
                 ("pmTotal"  , self.pmtotConc)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "RTPM", realtimePmDict )
-            
+            time.sleep(.1)    
+
             stdRealtimePmDict = OrderedDict([
                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                 ("pm1"     , self.pm1stpConc),
@@ -551,7 +563,7 @@ class T640:
                 ("pmTotal" , self.pmtotstpConc)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "STDRTPM", stdRealtimePmDict  )
-
+            time.sleep(.1)    
 
             pm1hrRollingDict                    = OrderedDict([
                 ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -562,7 +574,7 @@ class T640:
                 ("pmTotal"  , self.pmtot1hrAvg),
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R1HPM",  pm1hrRollingDict )
-
+            time.sleep(.1)    
 
             pm12hrRollingDict = OrderedDict([
                 ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -573,7 +585,7 @@ class T640:
                 ("pmTotal"  , self.pmtot12hrAvg),
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R12HPM",  pm12hrRollingDict )
-
+            time.sleep(.1)    
 
             pm24hrRollingDict = OrderedDict([
                 ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -584,6 +596,8 @@ class T640:
                 ("pmTotal"  , self.pmtot24hrAvg),
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "R24HPM",  pm24hrRollingDict )
+            time.sleep(.1)    
+
 
             pm1hrStandardizedDict = OrderedDict([
                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -593,6 +607,7 @@ class T640:
                 ("pmTotal" , self.pmtotstp1hrAvg)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S1HPM",  pm1hrStandardizedDict )
+            time.sleep(.1)    
 
             pm12hrStandardizedDict = OrderedDict([
                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -602,6 +617,7 @@ class T640:
                 ("pmTotal" , self.pmtotstp12hrAvg)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S12HPM",  pm12hrStandardizedDict )
+            time.sleep(.1)    
 
             pm24hrStandardizedDict = OrderedDict([
                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -611,7 +627,7 @@ class T640:
                 ("pmTotal" , self.pmtotstp24hrAvg)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "S24HPM",  pm24hrStandardizedDict )
-
+            time.sleep(.1)    
 
             particleHistogramCounts    = OrderedDict([
                 ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
@@ -620,7 +636,7 @@ class T640:
                 ("totalParticleConc"     , self.numConc)
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "PHC",  particleHistogramCounts )
-
+            time.sleep(.1)    
 
 
             climateDict                          = OrderedDict([
@@ -632,8 +648,9 @@ class T640:
                 ("temperature"        , self.opcRtOutsideTemp),
                 ("rhSensorTemp"       , self.opcRtSampTemp)
             ])
-
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "CLMA",  climateDict )
+            time.sleep(.1)                
+            
             # ASC Temperature is not given on the API 
 
             pumpAndFlowDict = OrderedDict([
@@ -651,46 +668,8 @@ class T640:
                 ("bypassFlowCV"       , self.flow11Cv24hrAvg),
                 ("totalFlowCV"        , self.flowtotCv24hrAvg),
             ])
-
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "PV",  pumpAndFlowDict )
-            
-            # STRING VARIABLES svCom1Protocol, svCom1Parity, svCom2Parity
-            # svCom2HandshakingMode, 
-
-            svComDict = OrderedDict([
-                ("svCom1Protocol"                    , self.svCom1Protocol),
-                ("svCom1ModemInitString"             , self.svCom1ModemInitString),
-                ("svCom1Baudrate"                    , self.svCom1Baudrate),
-                ("svCom1Parity"                      , self.svCom1Parity),
-                ("svCom1Databits"                    , self.svCom1Databits),
-                ("svCom1Stopbits"                    , self.svCom1Stopbits),
-                ("svCom2Protocol"                    , self.svCom2Protocol),
-                ("svCom2ModemInitString"             , self.svCom2ModemInitString),
-                ("svCom2Baudrate"                    , self.svCom2Baudrate),
-                ("svCom2Parity"                      , self.svCom2Parity),
-                ("svCom2Databits"                    , self.svCom2Databits),
-                ("svCom2Stopbits"                    , self.svCom2Stopbits),
-                ("svCom2ModemConnection"             , self.svCom2ModemConnection),
-                ("svCom2EnableQuietMode"             , self.svCom2EnableQuietMode),
-                ("svCom2EnableSecurity"              , self.svCom2EnableSecurity),
-                ("svCom2EnableMultidrop"             , self.svCom2EnableMultidrop),
-                ("svCom2EnableRs485"                 , self.svCom2EnableRs485),
-                ("svCom2HandshakingMode"             , self.svCom2HandshakingMode),
-                ("svCom2EnableCommandPromptDisplay"  , self.svCom2EnableCommandPromptDisplay),
-                ("svCom2DisableEchoLineEditing"      , self.svCom2DisableEchoLineEditing),
-                ("svCom2DisableHardwareErrorChecking", self.svCom2DisableHardwareErrorChecking),
-                ("svCom2EnableHardwareFifo"          , self.svCom2EnableHardwareFifo),
-                ("svCom2Initialize"                  , self.svCom2Initialize),
-                ("svTcp1Initialize"                  , self.svTcp1Initialize),
-                ("svTcp1Portnum"                     , self.svTcp1Portnum),
-                ("svTcp1EnableSecurity"              , self.svTcp1EnableSecurity),
-                ("svTcp1EnableCommandPromptDisplay"  , self.svTcp1EnableCommandPromptDisplay),
-                ("svTcp2Initialize"                  , self.svTcp2Initialize),
-                ("svTcp2Portnum"                     , self.svTcp2Portnum),
-            ])
-
-            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SV",svComDict)
-            
+            time.sleep(.1)                
 
             binDict = OrderedDict([
                 ("bin000", self.bin000), ("bin001", self.bin001), ("bin002", self.bin002), ("bin003", self.bin003), ("bin004", self.bin004),
@@ -747,62 +726,560 @@ class T640:
                 ("bin255", self.bin255),
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "HIST",binDict)
-
-            # Strings
-            # nativeAppState
-            # instrumentMode
-            # instrumentTime
-            # dlFlush
-            # dlLastFlushed
-            # svLanguageSelect
-            # svClockFormat
-            # driverVersion
-            # packageVersion
-            # tagsFlushControl
-            # tagsFlushState
-            # tagsFlushTimestamp
-            # osPlatform
-            # osVersion
-            # cfnetVersion
-            systemStatusDict = OrderedDict([
-                ("nativeAppState"               , self.nativeAppState),
-                ("instrumentMode"               , self.instrumentMode),
-                ("instrumentTime"               , self.instrumentTime),
-                ("dlFlush"                      , self.dlFlush),
-                ("dlLastFlushed"                , self.dlLastFlushed),
-                ("svClockSpeedAdjust"           , self.svClockSpeedAdjust),
-                ("svLanguageSelect"             , self.svLanguageSelect),
-                ("asfMaintenanceModeSoftware"   , self.asfMaintenanceModeSoftware),
-                ("sysWarnMaintenanceMode"       , self.sysWarnMaintenanceMode),
-                ("svLatchWarning"               , self.svLatchWarning),
-                ("svSerialNumber"               , self.svSerialNumber),
-                ("svClockFormat"                , self.svClockFormat),
-                ("svSystemServiceInterval"      , self.svSystemServiceInterval),
-                ("svSystemTotalHours"           , self.svSystemTotalHours),
-                ("svSystemTimeSinceLastInterval", self.svSystemTimeSinceLastInterval),
-                ("svSystemServicePeriodClear"   , self.svSystemServicePeriodClear),
-                ("svDaylightSavingsEnable"      , self.svDaylightSavingsEnable),
-                ("svMachineId"                  , self.svMachineId),
-                ("svDasHoldOff"                 , self.svDasHoldOff),
-                ("asfSystemResetWarning"        , self.asfSystemResetWarning),
-                ("placeholderTagBoolean"        , self.placeholderTagBoolean),
-                ("placeholderTagDouble"         , self.placeholderTagDouble),
-                ("sysWarnReset"                 , self.sysWarnReset),
-                ("warmUpComplete"               , self.warmUpComplete),
-                ("driverVersion"                , self.driverVersion),
-                ("packageVersion"               , self.packageVersion),
-                ("tagsFlushControl"             , self.tagsFlushControl),
-                ("tagsFlushState"               , self.tagsFlushState),
-                ("tagsFlushTimestamp"           , self.tagsFlushTimestamp),
-                ("osPlatform"                   , self.osPlatform),
-                ("osVersion"                    , self.osVersion),
-                ("cfnetVersion"                 , self.cfnetVersion),
+            time.sleep(.1)    
+            ## Pick out the strings 
+            # 'svCom1Protocol',
+            # 'svCom1ModemInitString',
+            # 'svCom1Parity',
+            svcom1Config = OrderedDict([
+                ("dateTime"               , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("svCom1Protocol"         , self.svCom1Protocol),
+                ("svCom1ModemInitString"  , self.svCom1ModemInitString),
+                ("svCom1Baudrate"         , self.svCom1Baudrate),
+                ("svCom1Parity"           , self.svCom1Parity),
+                ("svCom1Databits"         , self.svCom1Databits),
+                ("svCom1Stopbits"         , self.svCom1Stopbits),
             ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SVCOM1",svcom1Config )
+            time.sleep(.1)    
 
-            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "INFO",systemStatusDict)
+            ## Pick out the strings 
+            # 'svCom2Protocol',
+            # 'svCom2ModemInitString',
+            # 'svCom2Parity',
+            # 'svCom2HandshakingMode',
+            svcom2Config = OrderedDict([
+            ("dateTime"                                , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+            ("svCom2Protocol"                          , self.svCom2Protocol),
+            ("svCom2ModemInitString"                   , self.svCom2ModemInitString),
+            ("svCom2Baudrate"                          , self.svCom2Baudrate),
+            ("svCom2Parity"                            , self.svCom2Parity),
+            ("svCom2Databits"                          , self.svCom2Databits),
+            ("svCom2Stopbits"                          , self.svCom2Stopbits),
+            ("svCom2ModemConnection"                   , self.svCom2ModemConnection),
+            ("svCom2EnableQuietMode"                   , self.svCom2EnableQuietMode),
+            ("svCom2EnableSecurity"                    , self.svCom2EnableSecurity),
+            ("svCom2EnableMultidrop"                   , self.svCom2EnableMultidrop),
+            ("svCom2EnableRs485"                       , self.svCom2EnableRs485),
+            ("svCom2HandshakingMode"                   , self.svCom2HandshakingMode),
+            ("svCom2EnableCommandPromptDisplay"        , self.svCom2EnableCommandPromptDisplay),
+            ("svCom2DisableEchoLineEditing"            , self.svCom2DisableEchoLineEditing),
+            ("svCom2DisableHardwareErrorChecking"      , self.svCom2DisableHardwareErrorChecking),
+            ("svCom2EnableHardwareFifo"                , self.svCom2EnableHardwareFifo),
+            ("svCom2Initialize"                        , self.svCom2Initialize),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SVCOM2",svcom2Config )
+            time.sleep(.1)    
+
+            svtcpConfig = OrderedDict([
+                ("dateTime"                           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("svTcp1Initialize"                   , self.svTcp1Initialize),
+                ("svTcp1Portnum"                      , self.svTcp1Portnum),
+                ("svTcp1EnableSecurity"               , self.svTcp1EnableSecurity),
+                ("svTcp1EnableCommandPromptDisplay"   , self.svTcp1EnableCommandPromptDisplay),
+                ("svTcp2Initialize"                   , self.svTcp2Initialize),
+                ("svTcp2Portnum"                      , self.svTcp2Portnum),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SVTCP",svtcpConfig )
 
 
+            svpmConfig = OrderedDict([
+                ("dateTime"         , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("svPm10Disp"       , self.svPm10Disp),
+                ("svPmcDisp"        , self.svPmcDisp),
+                ("svPm10stpDisp"    , self.svPm10stpDisp),
+                ("svPm25stpDisp"    , self.svPm25stpDisp),
+                ("svPm1stpDisp"     , self.svPm1stpDisp),
+                ("svPmtotstpDisp"   , self.svPmtotstpDisp),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SVPM",svpmConfig)
+            time.sleep(.1)    
 
+            # # SVINFO
+            # 'svLanguageSelect',
+            # 'svClockFormat',
+            # 'svUserPressureUnits',
+            svinfoConfig = OrderedDict([
+                ("dateTime"                          , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("svClockSpeedAdjust"                , self.svClockSpeedAdjust),
+                ("svLanguageSelect"                  , self.svLanguageSelect),
+                ("asfMaintenanceModeSoftware"        , self.asfMaintenanceModeSoftware),
+                ("sysWarnMaintenanceMode"            , self.sysWarnMaintenanceMode),
+                ("svLatchWarning"                    , self.svLatchWarning),
+                ("svSerialNumber"                    , self.svSerialNumber),
+                ("svClockFormat"                     , self.svClockFormat),
+                ("svSystemServiceInterval"           , self.svSystemServiceInterval),
+                ("svSystemTotalHours"                , self.svSystemTotalHours),
+                ("svSystemTimeSinceLastInterval"     , self.svSystemTimeSinceLastInterval),
+                ("svSystemServicePeriodClear"        , self.svSystemServicePeriodClear),
+                ("svDaylightSavingsEnable"           , self.svDaylightSavingsEnable),
+                ("svMachineId"                       , self.svMachineId),
+                ("svDasHoldOff"                      , self.svDasHoldOff),
+                ("svUserPressureUnits"               , self.svUserPressureUnits),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SVINFO",svinfoConfig)
+            time.sleep(.1)    
+
+            ramConfig = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("systemTotalRam"             , self.systemTotalRam),
+                ("systemFreeRam"              , self.systemFreeRam),
+                ("systemUsedRam"              , self.systemUsedRam),
+                ("systemTotalDiskSize"        , self.systemTotalDiskSize),
+                ("systemAvailableDiskSpace"   , self.systemAvailableDiskSpace),
+                ("systemUsedDiskSpace"        , self.systemUsedDiskSpace),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "RAM",ramConfig)
+            time.sleep(.1)    
+            # # NET
+            # 'networkAddressType',
+            # 'networkIpAddress',
+            # 'networkSubnetMask',
+            # 'networkDefaultGateway',
+            # 'networkDns1',
+            # 'networkDns2',
+            netConfig = OrderedDict([
+                ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("networkAddressType"    , self.networkAddressType),
+                ("networkIpAddress"      , self.networkIpAddress),
+                ("networkSubnetMask"     , self.networkSubnetMask),
+                ("networkDefaultGateway" , self.networkDefaultGateway),
+                ("networkDns1"           , self.networkDns1),
+                ("networkDns2"           , self.networkDns2),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "NET",netConfig)
+            time.sleep(.1)    
+            # # FRM
+            # 'firmwareUpdateState',
+            # 'firmwareUpdateResult',
+            # 'firmwareUpdateErrorDetails',
+            # 'configDownloadUploadState',
+            # 'configDownloadUploadResult',
+            # 'configDownloadUploadErrorDetails',
+            firmwareConfig = OrderedDict([
+                ("dateTime"                            , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("refreshInstrumentSettings"           , self.refreshInstrumentSettings),
+                ("firmwareUpdateState"                 , self.firmwareUpdateState),
+                ("firmwareUpdateResult"                , self.firmwareUpdateResult),
+                ("firmwareUpdateProgressPercent"       , self.firmwareUpdateProgressPercent),
+                ("firmwareUpdateErrorDetails"          , self.firmwareUpdateErrorDetails),
+                ("configDownloadUploadState"           , self.configDownloadUploadState),
+                ("configDownloadUploadResult"          , self.configDownloadUploadResult),
+                ("configDownloadUploadProgressPercent" , self.configDownloadUploadProgressPercent),
+                ("configDownloadUploadErrorDetails"    , self.configDownloadUploadErrorDetails),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "FRM",firmwareConfig)
+            time.sleep(.1)    
+            # # RMT
+            # 'remoteUpdateControl',
+            # 'remoteUpdateState',
+            # 'remoteUpdateVersion',
+            rmtConfig = OrderedDict([
+                ("dateTime"                     , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("remoteUpdateControl"          , self.remoteUpdateControl),
+                ("remoteUpdateState"            , self.remoteUpdateState),
+                ("remoteUpdateDownloadPercent"  , self.remoteUpdateDownloadPercent),
+                ("remoteUpdateVersion"          , self.remoteUpdateVersion),
+                ("remoteUpdateRequiredDiskSpace", self.remoteUpdateRequiredDiskSpace),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "RMT",rmtConfig)
+            time.sleep(.1)    
+            # # DNH
+            # 'dustCalControl',
+            # 'dustCalState',
+            # 'homeMeter1',
+            # 'homeMeter2',
+            # 'homeMeter3',
+            dustCalConfig = OrderedDict([
+                ("dateTime"        , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("dustCalControl"  , self.dustCalControl),
+                ("dustCalState"    , self.dustCalState),
+                ("homeMeter1"      , self.homeMeter1),
+                ("homeMeter2"      , self.homeMeter2),
+                ("homeMeter3"      , self.homeMeter3),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "DNH",dustCalConfig)
+            time.sleep(.1)    
+            # # SLK
+            # 'leakCheckControl',
+            # 'leakCheckState',
+            leakCheckConfig = OrderedDict([
+                ("dateTime"            , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("spanDev48hrAvg"      , self.spanDev48hrAvg),
+                ("leakcheckpm10Conc"   , self.leakcheckpm10Conc),
+                ("leakcheckpm25Conc"   , self.leakcheckpm25Conc),
+                ("leakCheckControl"    , self.leakCheckControl),
+                ("leakCheckState"      , self.leakCheckState),
+                ("ks10"                , self.ks10),
+                ("ks25"                , self.ks25),
+                ("ks1"                 , self.ks1),
+                ("kstot"               , self.kstot),
+                ("ko10"                , self.ko10),
+                ("ko25"                , self.ko25),
+                ("ko1"                 , self.ko1),
+                ("kotot"               , self.kotot),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SLK",leakCheckConfig)
+            time.sleep(.1)    
+
+            opcSettingsConfig = OrderedDict([
+                ("dateTime"                    , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("opcSvOffsetAdjDelay"         , self.opcSvOffsetAdjDelay),
+                ("opcSvPmtHvSetting"           , self.opcSvPmtHvSetting),
+                ("opcSvPmtHvOffsetAdj"         , self.opcSvPmtHvOffsetAdj),
+                ("opcSvBcFiltSize"             , self.opcSvBcFiltSize),
+                ("opcSvAcquisitionDuration"    , self.opcSvAcquisitionDuration),
+                ("opcSvFlow5lpmOffset"         , self.opcSvFlow5lpmOffset),
+                ("opcSvFlow5lpmSlope"          , self.opcSvFlow5lpmSlope),
+                ("opcSvFlow1167lpmOffset"      , self.opcSvFlow1167lpmOffset),
+                ("opcSvFlow1167lpmSlope"       , self.opcSvFlow1167lpmSlope),
+                ("opcSvAmbPressSlope"          , self.opcSvAmbPressSlope),
+                ("opcSvRhControlSetpoint"      , self.opcSvRhControlSetpoint),
+                ("opcSv5lFlowSetpoint"         , self.opcSv5lFlowSetpoint),
+                ("opcSv11lFlowSetpoint"        , self.opcSv11lFlowSetpoint),
+                ("opcSvAmbPressOffset"         , self.opcSvAmbPressOffset),
+                ("opcSvRhSlope"                , self.opcSvRhSlope),
+                ("opcSvRhOffset"               , self.opcSvRhOffset),
+                ("opcSvFanSetpoint"            , self.opcSvFanSetpoint),
+                ("opcSvInstrumentSlope"        , self.opcSvInstrumentSlope),
+                ("opcSvOffsetCounts"           , self.opcSvOffsetCounts),
+                ("opcSvAutoAdjustEnable"       , self.opcSvAutoAdjustEnable),
+                ("opcSvPmtCalSetting"          , self.opcSvPmtCalSetting),
+                ("opcSvLogInterval"            , self.opcSvLogInterval),
+                ("opcSvTempCompSlope"          , self.opcSvTempCompSlope),
+                ("opcSvDustCalFiltSize"        , self.opcSvDustCalFiltSize),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "OPCSV",opcSettingsConfig)
+            time.sleep(.1)    
+            #    # OPC
+            #     'opcSensorStatus',
+            #     'opcSensorMode',
+            #     'opcHeaterStatus',
+            #     'opcPumpControl',
+            #     'opcValveControl',
+            #     'opcUsbStorageState',
+            #     'opcSensorState',
+            #     'opcSensorFirmwareRev',
+            #     'opcSyslogFilesize',
+            #     'opcInstWarnMessage',
+            #     'opcInstErrorMessage',
+            opcStatusConfig = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("opcSpanDeviation"          , self.opcSpanDeviation),
+                ("opcPm10stpTemp"            , self.opcPm10stpTemp),
+                ("opcPm10stpPressure"        , self.opcPm10stpPressure),
+                ("opcRtP3Calc"               , self.opcRtP3Calc),
+                ("opcSensorStatus"           , self.opcSensorStatus),
+                ("opcSensorMode"             , self.opcSensorMode),
+                ("opcAmbientTempOverride"    , self.opcAmbientTempOverride),
+                ("opcHeaterStatus"           , self.opcHeaterStatus),
+                ("opcBoardFirmwareRev"       , self.opcBoardFirmwareRev),
+                ("opcHeaterControlEnable"    , self.opcHeaterControlEnable),
+                ("opcPumpControl"            , self.opcPumpControl),
+                ("opcValveControl"           , self.opcValveControl),
+                ("opcRtHeaterDuty"           , self.opcRtHeaterDuty),
+                ("opcRtPumpSpeed"            , self.opcRtPumpSpeed),
+                ("opcUsbStorageState"        , self.opcUsbStorageState),
+                ("opcSensorState"            , self.opcSensorState),
+                ("opcZeroChannel"            , self.opcZeroChannel),
+                ("opcFastHistUpdate"         , self.opcFastHistUpdate),
+                ("opcSensorFirmwareRev"      , self.opcSensorFirmwareRev),
+                ("opcSyslogFilesize"         , self.opcSyslogFilesize),
+                ("opcDeleteSyslog"           , self.opcDeleteSyslog),
+                ("opcLengthPeakChannel"      , self.opcLengthPeakChannel),
+                ("opcInstrumentWarning"      , self.opcInstrumentWarning),
+                ("opcInstrumentError"        , self.opcInstrumentError),
+                ("opcInstWarnMessage"        , self.opcInstWarnMessage),
+                ("opcInstErrorMessage"       , self.opcInstErrorMessage),
+                ("opcCalPeakChannel"         , self.opcCalPeakChannel),
+                ("opcSystemFault"            , self.opcSystemFault),
+                ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "OPC",opcStatusConfig)
+            time.sleep(.1)    
+
+            # # FLOW
+            # 'flow5CalControl',
+            # 'flow5CalState',
+            # 'flow11CalControl',
+            # 'flow11CalState',
+            flowDiagnosticsConfig = OrderedDict([
+                ("dateTime"                    , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("aiSampleFlow5"              , self.aiSampleFlow5),
+                ("flow5CalActualFlowValue"    , self.flow5CalActualFlowValue),
+                ("aiSampleFlow11"             , self.aiSampleFlow11),
+                ("flow11CalActualFlowValue"   , self.flow11CalActualFlowValue),
+                ("flow5CalControl"            , self.flow5CalControl),
+                ("flow5CalState"              , self.flow5CalState),
+                ("flow11CalControl"           , self.flow11CalControl),
+                ("flow11CalState"             , self.flow11CalState),
+                ("sensorCheckChannelCounts"   , self.sensorCheckChannelCounts),
+                ("sampleFlowWarn"             , self.sampleFlowWarn),
+                ("bypassFlowWarn"             , self.bypassFlowWarn),
+                ("sampFlowSlopeOor"           , self.sampFlowSlopeOor),
+                ("bypsFlowSlopeOor"           , self.bypsFlowSlopeOor),
+                ("flow5Cv24hrAvg"             , self.flow5Cv24hrAvg),
+                ("flow11Cv24hrAvg"            , self.flow11Cv24hrAvg),
+                ("flowtotCv24hrAvg"           , self.flowtotCv24hrAvg),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "FLOW",flowDiagnosticsConfig)
+            time.sleep(.1)    
+            # # DUST
+            # 'dustCalStartTime',
+            # 'dustCalEndTime',
+            # 'dustCalActiveTime',
+            dustCalConfigEnhanced = OrderedDict([
+                ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("dustCalEnhancedLog"    , self.dustCalEnhancedLog),
+                ("dustCalOverride"       , self.dustCalOverride),
+                ("dustCalStartTime"      , self.dustCalStartTime),
+                ("dustCalEndTime"        , self.dustCalEndTime),
+                ("dustCalActiveTime"     , self.dustCalActiveTime),
+                ("dustCalActiveIndex"    , self.dustCalActiveIndex),
+                ("dustCalDwellTime"      , self.dustCalDwellTime),
+                ("dustCalMinPeakCounts"  , self.dustCalMinPeakCounts),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "DUST", dustCalConfigEnhanced)
+            time.sleep(.1)    
+
+            # # DL
+            # 'dlTimeFormat',
+            # 'dlLastDownloadTime',
+            # 'dlDasDownloadFrom',
+            # 'dlDasDownloadT1',
+            # 'dlDasDownloadT2',
+            # 'dlFlush',
+            # 'dlLastFlushed',
+            downloadConfig = OrderedDict([
+                ("dateTime"               , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("dlIncludeUniversalTime" , self.dlIncludeUniversalTime),
+                ("dlTimeFormat"           , self.dlTimeFormat),
+                ("dlRepoChanged"          , self.dlRepoChanged),
+                ("dlLastDownloadTime"     , self.dlLastDownloadTime),
+                ("dlDasDownloadFrom"      , self.dlDasDownloadFrom),
+                ("dlDasDownloadT1"        , self.dlDasDownloadT1),
+                ("dlDasDownloadT2"        , self.dlDasDownloadT2),
+                ("dlFlush"                , self.dlFlush),
+                ("dlLastFlushed"          , self.dlLastFlushed),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "DL", downloadConfig)
+            time.sleep(.1)    
+
+            memoryConfig = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("lowMemoryRestart"   , self.lowMemoryRestart),
+                ("lowMemoryWarning"   , self.lowMemoryWarning),
+                ("memoryTotal"        , self.memoryTotal),
+                ("memoryTee"          , self.memoryTee),
+                ("memoryHmi"          , self.memoryHmi),
+                ("memoryDl"           , self.memoryDl),
+                ("memoryAc"           , self.memoryAc),
+                ("memoryEv"           , self.memoryEv),
+                ("memoryMb"           , self.memoryMb),
+                ("memoryWeb"          , self.memoryWeb),
+                ("memoryRu"           , self.memoryRu),
+                ("memoryOpc"          , self.memoryOpc),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "MMRY", memoryConfig)
+            time.sleep(.1)    
+            # # TAG
+            # 'tagsFlushControl',
+            # 'tagsFlushState',
+            # 'tagsFlushTimestamp',
+            tagConfig = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("tagEventSystem"     , self.tagEventSystem),
+                ("tagEventTee"        , self.tagEventTee),
+                ("tagEventHmi"        , self.tagEventHmi),
+                ("tagEventDl"         , self.tagEventDl),
+                ("tagEventEv"         , self.tagEventEv),
+                ("tagEventMb"         , self.tagEventMb),
+                ("tagEventWeb"        , self.tagEventWeb),
+                ("tagEventRu"         , self.tagEventRu),
+                ("tagEventOpc"        , self.tagEventOpc),
+                ("tagsFlushControl"   , self.tagsFlushControl),
+                ("tagsFlushState"     , self.tagsFlushState),
+                ("tagsFlushTimestamp" , self.tagsFlushTimestamp),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "TAG", tagConfig)
+            time.sleep(.1)    
+
+            checkConfig = OrderedDict([
+                ("dateTime"       , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("checkLed"       , self.checkLed),
+                ("checkPmt"       , self.checkPmt),
+                ("checkIntPump"   , self.checkIntPump),
+                ("checkExtPump"   , self.checkExtPump),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "CHCK", checkConfig)
+            time.sleep(.1)    
+
+            # # LINF
+            # 'instMode',
+            linfConfig = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("instMode"           , self.instMode),
+                ("sampleTempWarn"     , self.sampleTempWarn),
+                ("boxTempWarn"        , self.boxTempWarn),
+                ("sampleRhHigh"       , self.sampleRhHigh),
+                ("sampPresSlopeOor"   , self.sampPresSlopeOor),
+                ("spanDevOor"         , self.spanDevOor),
+                ("placeholderTagBoolean", self.placeholderTagBoolean),
+                ("placeholderTagDouble", self.placeholderTagDouble),
+                ("warmUpComplete"     , self.warmUpComplete),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "LINF", linfConfig)
+            time.sleep(.1)    
+
+            syswConfig = OrderedDict([
+                ("dateTime"                       , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("sysWarnSystemFault"             , self.sysWarnSystemFault),
+                ("sysWarnInternalSerialTimeout"   , self.sysWarnInternalSerialTimeout),
+                ("sysWarnReset"                   , self.sysWarnReset),
+                ("sysWarnTimeNotSynced"           , self.sysWarnTimeNotSynced),
+                ("sysWarnMaintenanceMode"         , self.sysWarnMaintenanceMode),
+                ("sysWarnConfigReset"             , self.sysWarnConfigReset),
+                ("asfSystemResetWarning"          , self.asfSystemResetWarning),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "SYSW", syswConfig)
+            time.sleep(.1)    
+
+            fosdConfig = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("fo640x"             , self.fo640x),
+                ("foPm1"              , self.foPm1),
+                ("foPmtot"            , self.foPmtot),
+                ("foNonUsEpaFemMode"  , self.foNonUsEpaFemMode),
+                ("concValidFlag"      , self.concValidFlag),
+                ("hourAvgPctValid"    , self.hourAvgPctValid),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "FOSD", fosdConfig)
+            time.sleep(.1)    
+
+            # # TIME
+            # 'manualTimeServer',
+            # 'lastInstrumentTimeSynced',
+            # 'nextInstrumentTimeSync',
+            # 'timeSyncControl',
+            # 'timeSyncState',
+            # 'dateTimeTargetValue',
+            timeConfig = OrderedDict([
+                ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("timeSync"                   , self.timeSync),
+                ("timeSyncUseManual"          , self.timeSyncUseManual),
+                ("manualTimeServer"           , self.manualTimeServer),
+                ("timeSyncInterval"           , self.timeSyncInterval),
+                ("lastInstrumentTimeSynced"   , self.lastInstrumentTimeSynced),
+                ("nextInstrumentTimeSync"     , self.nextInstrumentTimeSync),
+                ("timeSyncControl"            , self.timeSyncControl),
+                ("timeSyncState"              , self.timeSyncState),
+                ("timeSyncPassing"            , self.timeSyncPassing),
+                ("dateTimeTargetValue"        , self.dateTimeTargetValue),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "TIME", timeConfig)
+            time.sleep(.1)    
+
+            # # COMM
+            # 'udpBroadcastIp',
+            commConfig = OrderedDict([
+                ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("udpBroadcastEnable" , self.udpBroadcastEnable),
+                ("udpBroadcastIp"     , self.udpBroadcastIp),
+                ("modbusUseUserUnits" , self.modbusUseUserUnits),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "COMM", commConfig)
+            time.sleep(.1)    
+
+            # # INFO
+            # 'driverVersion',
+            # 'packageVersion',
+            # 'osPlatform',
+            # 'osVersion',
+            # 'cfnetVersion',
+            # 'nativeAppState',
+            # 'instrumentMode',
+            # 'instrumentTime',
+            # 'systemTimeFormat',
+            # 'generalTimeFormat',
+            # 'alertsTimeFormat',
+            # 'datalogTimeFormat',
+            # 'instrumentShutdown',
+            # 'instrumentReset',
+            # 'reportGenerationUploadControl',
+            # 'reportGenerationUploadState',
+            infoConfig = OrderedDict([
+                ("dateTime"                        , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("driverVersion"                   , self.driverVersion),
+                ("packageVersion"                  , self.packageVersion),
+                ("osPlatform"                      , self.osPlatform),
+                ("osVersion"                       , self.osVersion),
+                ("cfnetVersion"                    , self.cfnetVersion),
+                ("nativeAppState"                  , self.nativeAppState),
+                ("instrumentMode"                  , self.instrumentMode),
+                ("instrumentTime"                  , self.instrumentTime),
+                ("systemTimeFormat"                , self.systemTimeFormat),
+                ("generalTimeFormat"               , self.generalTimeFormat),
+                ("alertsTimeFormat"                , self.alertsTimeFormat),
+                ("datalogTimeFormat"               , self.datalogTimeFormat),
+                ("instrumentShutdown"              , self.instrumentShutdown),
+                ("instrumentReset"                 , self.instrumentReset),
+                ("reportGenerationUploadControl"   , self.reportGenerationUploadControl),
+                ("reportGenerationUploadState"     , self.reportGenerationUploadState),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "INFO", infoConfig)
+            time.sleep(.1)    
+
+            # # DAP
+            # 'dasUploadControl',
+            # 'dasUploadState',
+            # 'actionProgressTitle',
+            # 'pressureCalControl',
+            # 'pressureCalState',
+            dapConfig = OrderedDict([
+                ("dateTime"                        , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("dasUploadControl"                , self.dasUploadControl),
+                ("dasUploadState"                  , self.dasUploadState),
+                ("actionProgressTitle"             , self.actionProgressTitle),
+                ("actionProgressPercent"           , self.actionProgressPercent),
+                ("actionProgressCancel"            , self.actionProgressCancel),
+                ("actionProgressCancelEnable"      , self.actionProgressCancelEnable),
+                ("pressureCalControl"              , self.pressureCalControl),
+                ("pressureCalState"                , self.pressureCalState),
+                ("pressureCalActualPressureValue"  , self.pressureCalActualPressureValue),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "DAP", dapConfig)
+            time.sleep(.1)    
+
+            # # ISC
+            # 'lastInstrumentUpdateCheck',
+            # 'packageVersionNeedingUpdate',
+            iscConfig = OrderedDict([
+                ("dateTime"                          , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("sensorConfigBypass"                , self.sensorConfigBypass),
+                ("prigasPrec"                        , self.prigasPrec),
+                ("secgasPrec"                        , self.secgasPrec),
+                ("periodicUpdateCheck"               , self.periodicUpdateCheck),
+                ("lastInstrumentUpdateCheck"         , self.lastInstrumentUpdateCheck),
+                ("packageVersionNeedingUpdate"       , self.packageVersionNeedingUpdate),
+                ("periodicUpdateFlag"                , self.periodicUpdateFlag),
+                ("sysInfoUpdateAvail"                , self.sysInfoUpdateAvail),
+                ("backgroundPeriodicReportUpload"    , self.backgroundPeriodicReportUpload),
+                ("reportUploadInterval"              , self.reportUploadInterval),
+                ("uploadReportToCloud"               , self.uploadReportToCloud),
+                ("configResetFlag"                   , self.configResetFlag),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "ISC", iscConfig)
+            time.sleep(.1)    
+
+            daalConfig = OrderedDict([
+                ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                ("daOffset1"             , self.daOffset1),
+                ("daOffset2"             , self.daOffset2),
+                ("daSlope"               , self.daSlope),
+                ("foT640DataAlignment"   , self.foT640DataAlignment),
+                ("sysOkWarn"             , self.sysOkWarn),
+            ])
+            mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "DAAL", daalConfig)
+            time.sleep(.1)    
 
         else:
             print(f"Failed to fetch data. Status code: {response.status_code}")
