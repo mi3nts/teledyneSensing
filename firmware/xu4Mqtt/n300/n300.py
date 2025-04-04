@@ -19,9 +19,8 @@ def decode_float(regs, index):
     return struct.unpack('>f', raw.to_bytes(4, byteorder='big'))[0]
 
 
-class T640:
+class N300:
     def __init__(self, host: str, port: int = 502, api_port: int = 8180 ,unit_id=1):
-        
         
         self.client = ModbusTcpClient(host, port=port)
         if not self.client.connect():
@@ -29,147 +28,131 @@ class T640:
             sys.exit(1)  # Exit the script with a non-zero exit code        
         
         self.unit_id = unit_id
-        self.sensorIDPreModbus = "T640MB001"
-        
-        self.sensorIDPreAPI    = "T640API001"
+        self.sensorIDPreModbus = "N300MB001"
+        self.sensorIDPreAPI    = "N300API001"
         self.apiURL            = "http://" + host +":"+ str(api_port) + "/api/taglist"  
 
-        self.discrete_labels = [
-            "Box Temperature Warning",
-            "Sample Flow Warning",
-            "Internal Serial Timeout",
-            "System Reset Warning",
-            "System OK Warning",
-            "Sample Temperature Warning",
-            "Bypass Flow Warning",
-            "System Fault Warning"
-        ]
+        self.discrete_feilds = {
+            0:  "Source Warning",
+            2:  "Bench Temperature Warning",
+            3:  "Wheel Temperature Warning",
+            7:  "CPU Rebooted Warning",
+            8:  "Supervisor Communication Warning",
+            9:  "GFC Communication Warning",
+            10: "Pump Control Communication Warning",
+            11: "Analog Output Communication Warning",
+            12: "Digital I/O Communication Warning",
+            13: "Low Memory Warning",
+            14: "Invalid Concentration Warning",
+            18: "System OK Status Warning",
+            19: "Analog Output 1 Requires Calibration Warning",
+            20: "Analog Output 2 Requires Calibration Warning",
+            21: "Analog Output 3 Requires Calibration Warning",
+            22: "Analog Output 4 Requires Calibration Warning",
+            23: "Analog Output 5 Requires Calibration Warning",
+            24: "Analog Output 6 Requires Calibration Warning",
+            25: "Analog Output 7 Requires Calibration Warning",
+            26: "Time Not Synced with Network  Warning"
+        }
 
-        self.coil_labels = [
-            "Control Relay 36 (Fan or Heater)",
-            "Control Relay 37",
-            "Control Relay 38",
-            "Control Relay 39",
-            "Maintenance Mode Enabled"
-        ]
-
+        self.coil_bool_fields = {
+            20: "Zero Calibration - Range 1 Enabled",
+            21: "Span Calibration - Range 1 Enabled",
+            22: "Zero Calibration - Range 2 Enabled",
+            23: "Span Calibration - Range 2 Enabled"
+        }
 
         self.input_float_fields = {
-            0:  "Pump Tachometer Reading",
-            2:  "Total Amplitude Histogram Particle Count",
-            4:  "Total Length Distribution Particle Count",
-            6:  "PM10 Real-time Concentration",
-            8:  "PM2.5 Real-time Concentration",
-            10: "PM10-2.5 Real-time Concentration",
-            12: "PM10 Standardized Real-time Concentration",
-            14: "PM10 1Hr Rolling Avg",
-            16: "PM2.5 1Hr Rolling Avg",
-            18: "PM10-2.5 1Hr Rolling Avg",
-            20: "PM10 12Hr Rolling Avg",
-            22: "PM2.5 12Hr Rolling Avg",
-            24: "PM10-2.5 12Hr Rolling Avg",
-            26: "PM10 24Hr Rolling Avg",
-            28: "PM2.5 24Hr Rolling Avg",
-            30: "PM10-2.5 24Hr Rolling Avg",
-            32: "LED Temperature",
-            34: "Ambient Pressure",
-            36: "Humidity Sensor Reading",
-            38: "Box Temperature",
-            40: "Ambient Temperature Probe",
-            42: "ASC Tube Jacket Temperature",
-            44: "RH Sensor Temperature",
-            46: "Sample Flow (5lpm)",
-            48: "Bypass Flow (11.67lpm)",
-            50: "Total Flow (Sample + Bypass)",
-            52: "Signal Length",
-            54: "P3 Value",
-            56: "Pump Duty Cycle",
-            58: "Valve Duty Cycle",
-            60: "ASC Heater Duty Cycle",
-            62: "PM2.5 Standardized Real-time Concentration",
-            64: "PM1 Real-time Concentration",
-            66: "PM1 Standardized Real-time Concentration",
-            68: "PM1 1Hr Standardized Avg",
-            70: "PM2.5 1Hr Standardized Avg",
-            72: "PM10 1Hr Standardized Avg",
-            74: "PM1 12Hr Standardized Avg",
-            76: "PM2.5 12Hr Standardized Avg",
-            78: "PM10 12Hr Standardized Avg",
-            80: "PM1 24Hr Standardized Avg",
-            82: "PM2.5 24Hr Standardized Avg",
-            84: "PM10 24Hr Standardized Avg",
-            86: "Span Deviation",
-            88: "Span Dev Track (48Hr Rolling Avg)",
-            90: "PM1 1Hr Rolling Avg",
-            92: "PM1 12Hr Rolling Avg",
-            94: "PM1 24Hr Rolling Avg",
-            96: "PMtot Real-time Concentration",
-            98: "PMtot Standardized Real-time Concentration",
-            100: "PMtot 1Hr Avg",
-            102: "PMtot 1Hr Standardized Avg",
-            104: "PMtot 12Hr Avg",
-            106: "PMtot 12Hr Standardized Avg",
-            108: "PMtot 24Hr Avg",
-            110: "PMtot 24Hr Standardized Avg",
-            112: "Sample Flow CV (24Hr Avg)",
-            114: "Bypass Flow CV (24Hr Avg)",
-            116: "Total Flow CV (24Hr Avg)",
-            118: "Total Particle Number Concentration"
+            0:  "Photometer - Measure Reading (mV)",
+            2:  "Photometer - Reference Reading (mV)",
+            4:  "Measure over Reference Ratio",
+            6:  "CO Slope - Range 1",
+            8:  "CO Slope - Range 2",
+            10: "CO Offset - Range 1",
+            12: "CO Offset - Range 2",
+            18: "CO Concentration - Range 1",
+            20: "CO Concentration - Range 2",
+            22: "CO Concentration Stability",
+            24: "Bench Temperature (°C)",
+            26: "Bench Temperature Control Duty Cycle (%)",
+            28: "Wheel Temperature (°C)",
+            30: "Wheel Temperature Control Duty Cycle (%)",
+            32: "Sample Temperature (°C)",
+            34: "Sample Pressure (PSIA)",
+            36: "Box Temperature (°C)",
+            38: "Photometer Temperature Drive (mV)",
+            40: "Pump Flow (CCM)",
+            42: "Atmospheric Pressure (Pa)"
         }
 
-
-        self.holding_float_fields = {
-            0:  "PMT Output Voltage",
-            2:  "PMT Offset Voltage",
-            4:  "PMT High Voltage Power Supply (HVPS)",
-            6:  "Sample Flow Calibration (5LPM)",
-            8:  "Bypass Flow Calibration",
-            10: "Pressure Sensor Calibration",
-            12: "Relative Humidity (RH) Setpoint",
-            14: "Sample Flow Setpoint",
-            16: "Bypass Flow Setpoint",
-            18: "RH Sensor Calibration Slope",
-            20: "PM10 Calibration Slope (KS10)",
-            22: "PM2.5 Calibration Slope (KS2.5)",
-            24: "PM1 Calibration Slope (KS1)",
-            26: "PM10 Calibration Offset (KO10)",
-            28: "PM2.5 Calibration Offset (KO2.5)",
-            30: "PM1 Calibration Offset (KO1)"
-        }
 
 
     def read_discrete_inputs(self):
         dateTime  = datetime.now(timezone.utc)
         try:
-            result                     = self.client.read_discrete_inputs(0, len(self.discrete_labels), unit=self.unit_id)
+            start_address = min(self.discrete_feilds.keys())
+            count = max(self.discrete_feilds.keys()) - start_address + 1
+            result = self.client.read_discrete_inputs(start_address, count, unit=self.unit_id)
+            print(result.bits)
             if not result.isError():
-                (   self.boxTempWarning,
-                    self.sampleFlowWarning,
-                    self.internalSerialTimeout,
-                    self.systemResetWarning,
-                    self.sysOkWarning,
-                    self.sampleTemperatureWarning,
-                    self.bypassFlowWarning,
-                    self.systemFaultWarning
-                ) = result.bits
-                
+                (   self.sourceWarning,
+                    self.benchTemperatureWarning,
+                    self.wheelTemperatureWarning,
+                    self.cpuRebootedWarning,
+                    self.supervisorComWarning,
+                    self.gfcComWarning,
+                    self.pumpControlComWarning,
+                    self.analogOutputComWarning,
+                    self.digitalIOComWarning,
+                    self.lowMemoryWarning,
+                    self.invalidConcentrationWarning,
+                    self.systemOKStatusWarning,
+                    self.analogOutput1CalibWarning,
+                    self.analogOutput2CalibWarning,
+                    self.analogOutput3CalibWarning,
+                    self.analogOutput4CalibWarning,
+                    self.analogOutput5CalibWarning,
+                    self.analogOutput6CalibWarning,
+                    self.analogOutput7CalibWarning,
+                    self.timeNotSyncedWarning
+                ) = [
+                    result.bits[address - start_address] if (address - start_address) < len(result.bits) else None
+                    for address in sorted(self.discrete_feilds.keys())
+                ]
+                print(result.bits)
                 sensorDictionary = OrderedDict([
-                    ("dateTime"                , str(dateTime.strftime('%Y-%m-%d %H:%M:%S.%f'))),
-                    ("boxTempWarning"           , int(self.boxTempWarning)) ,
-                    ("sampleFlowWarning"        , int(self.sampleFlowWarning)),
-                    ("internalSerialTimeout"    , int(self.internalSerialTimeout)),
-                    ("systemResetWarning"       , int(self.systemResetWarning)),
-                    ("sysOkWarning"             , int(self.sysOkWarning)),
-                    ("sampleTemperatureWarning" , int(self.sampleTemperatureWarning)),
-                    ("bypassFlowWarning"        , int(self.bypassFlowWarning)),
-                    ("systemFaultWarning"       , int(self.systemFaultWarning)),
-                    ])       
-      
+                    ("dateTime", str(dateTime.strftime('%Y-%m-%d %H:%M:%S.%f'))),
+                    ("sourceWarning",                     int(self.sourceWarning)),
+                    ("benchTemperatureWarning",           int(self.benchTemperatureWarning)),
+                    ("wheelTemperatureWarning",           int(self.wheelTemperatureWarning)),
+                    ("cpuRebootedWarning",                int(self.cpuRebootedWarning)),
+                    ("supervisorComWarning",              int(self.supervisorComWarning)),
+                    ("gfcComWarning",                     int(self.gfcComWarning)),
+                    ("pumpControlComWarning",             int(self.pumpControlComWarning)),
+                    ("analogOutputComWarning",            int(self.analogOutputComWarning)),
+                    ("digitalIOComWarning",               int(self.digitalIOComWarning)),
+                    ("lowMemoryWarning",                  int(self.lowMemoryWarning)),
+                    ("invalidConcentrationWarning",       int(self.invalidConcentrationWarning)),
+                    ("systemOKStatusWarning",             int(self.systemOKStatusWarning)),
+                    ("analogOutput1CalibWarning",         int(self.analogOutput1CalibWarning)),
+                    ("analogOutput2CalibWarning",         int(self.analogOutput2CalibWarning)),
+                    ("analogOutput3CalibWarning",         int(self.analogOutput3CalibWarning)),
+                    ("analogOutput4CalibWarning",         int(self.analogOutput4CalibWarning)),
+                    ("analogOutput5CalibWarning",         int(self.analogOutput5CalibWarning)),
+                    ("analogOutput6CalibWarning",         int(self.analogOutput6CalibWarning)),
+                    ("analogOutput7CalibWarning",         int(self.analogOutput7CalibWarning)),
+                    ("timeNotSyncedWarning",              int(self.timeNotSyncedWarning)),
+                ])
                 mSR.sensorFinisher(dateTime,self.sensorIDPreModbus+"WRNS",sensorDictionary)
-      
-                return True, dict(zip(self.discrete_labels, result.bits))
+
+            return True, {
+                self.discrete_feilds[address]: result.bits[address - start_address]
+                for address in self.discrete_feilds
+                if (address - start_address) < len(result.bits)
+            }
         except ModbusException as e:
             print("[Error] Discrete Inputs:", e)
+
         return False, None
     
     def read_coils(self):
