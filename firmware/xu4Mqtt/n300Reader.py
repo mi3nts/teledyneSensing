@@ -4,7 +4,7 @@ import time
 from mintsXU4 import mintsSensorReader as mSR
 from pprint import pprint
 loopInterval = 10 
-hostIP       = "192.168.31.150"
+hostIP       = "192.168.20.127"
 
 def main(loopInterval,hostIP):
 
