@@ -39,6 +39,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_publish(client, userdata, result):
+    time.sleep(.01)
     print("MQTT Published!")
 
 

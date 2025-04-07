@@ -1,0 +1,373 @@
+
+
+
+self.instrumentTime = '04/07/2025 2:50:32 AM'
+self.svSerialNumber = 134
+self.packageVersion = '1.11.2.6'
+self.osPlatform = 'Windows CE'
+self.osVersion = 'PN:091930000, 1.0.8.52, 01/25/2024'
+self.cfnetVersion = '3.5.10010.0'
+
+self.systemTotalRam = 291404
+self.systemFreeRam = 199964
+self.systemUsedRam = 91440
+self.systemTotalDiskSize = 3734352
+self.systemAvailableDiskSpace = 3552268
+self.systemUsedDiskSpace = 182084
+
+self.networkAddressType = 'DHCP'
+self.networkIpAddress = '192.168.31.150'
+self.networkSubnetMask = '255.255.255.0'
+self.networkDefaultGateway = '192.168.31.1'
+self.networkDns1 = '8.8.8.8'
+self.networkDns2 = 'N/A'
+
+self.remoteUpdateControl = 'NONE'
+self.remoteUpdateState = 'ERROR_UNKNOWN'
+self.remoteUpdateDownloadPercent = 100
+self.remoteUpdateVersion = ''
+self.remoteUpdateRequiredDiskSpace = 150000
+self.periodicUpdateCheck = 1
+self.lastInstrumentUpdateCheck = '01/01/0001 12:00:00 AM'
+self.packageVersionNeedingUpdate = ''
+self.periodicUpdateFlag = 0
+self.sysInfoUpdateAvail = 0
+self.configResetFlag = 0
+self.sysWarnConfigReset = 0
+self.lowMemoryRestart = 0
+self.lowMemoryWarning = 0
+
+self.timeSync = 1
+self.timeSyncUseManual = 0
+self.manualTimeServer = ''
+self.timeSyncInterval = 2
+self.lastInstrumentTimeSynced = '04/07/2025 12:51:07 AM'
+self.nextInstrumentTimeSync = '04/07/2025 2:51:07 AM'
+
+self.memoryTotal = 23132204
+self.memoryTee = 1561168
+self.memoryHmi = 3755676
+self.memoryDl = 1625332
+self.memoryAc = 1844344
+self.memoryEv = 2293260
+self.memoryMb = 2249612
+self.memoryDo = 2207004
+self.memoryAo = 1497388
+self.memoryWeb = 1787472
+self.memoryRu = 1341360
+self.memoryCg = 2065216
+self.memoryHsn = 2152900
+
+self.svMachineId = 1
+self.svCom2Protocol = 'MODBUS RTU'
+self.svCom2ModemInitString = ''
+self.svCom2Baudrate = 115200
+self.svCom2Parity = 'NONE'
+self.svCom2Databits = 8
+self.svCom2Stopbits = 1
+self.svCom2ModemConnection = 0
+self.svCom2EnableQuietMode = 0
+self.svCom2EnableSecurity = 0
+self.svCom2EnableRs485 = 0
+self.svCom2HandshakingMode = 'SOFTWARE'
+self.svCom2EnableCommandPromptDisplay = 0
+self.svCom2DisableEchoLineEditing = 0
+self.svCom2DisableHardwareErrorChecking = 0
+self.svCom2EnableHardwareFifo = 1
+self.svCom2Initialize = 0
+
+self.hessenVariation = 'TYPE1'
+self.hessenResponseMode = 'CMD'
+self.hessenFixedTag = 16
+self.hessenGasName = 'NONGAS'
+self.hessenGasSelect = 0
+
+self.gfcFirmwarePartnumber = 9366
+self.gfcFirmwareRev = 17498369
+self.gfcFirmwareBuildNumber = 2
+self.gfcHardwareRev = 0
+self.gfcHardwarePartnumber = 0
+self.gfcModuleSerialNumber = 0
+self.gfcModuleRuntimeHours = 0
+self.gfcFirmwareVersionMismatch = 0
+
+self.sysWarnGfcFirmwareVersionMismatch = 0
+self.homeMeter1 = 'AI_IR_MEASURE'
+self.homeMeter2 = 'AI_IR_REFERENCE'
+self.homeMeter3 = 'CO_STABILITY'
+self.boardFamily = 'CO'
+self.boardMeasureLevel = 'NORMAL'
+self.instMode = 'SAMPLE'
+self.sfDiagnosticMode = 0
+self.svUserUnits = 'PPM'
+self.asfSystemResetWarning = 0
+self.warmUpComplete = 1
+
+self.asfMaintenanceModeSoftware = 0
+self.svMaintenanceModeTimeout = 2
+self.sysWarnMaintenanceMode = 0
+self.aiDetectorTemp = -20.38356590271
+self.aiDetectorTempRaw = 351.400421142578
+self.aiSampleTemp = 47.1796112060547
+self.aiSampleTempRaw = 1665.3310546875
+self.aiPhotoTempRaw = 319.9267578125
+self.aiIrMeasure = 2504.97778320312
+self.aiIrReference = 2120.22265625
+self.aiSamplePressure = 7.45521593093872
+self.aiSamplePressureRaw = 328.545471191406
+
+elf.svDarkCalDuration = 180
+self.svDarkMeasMv = 15.2175140380859
+self.svDarkRefMv = 15.1755828857422
+self.svNormSpan1 = 346.418823242187
+self.svNormSpan2 = 40
+self.svSpanRatio1 = 1.14014005661011
+self.svSpanRatio2 = 1.13999998569489
+
+self.coConc = 5.53340768814087
+self.coStability = 0.00374466693028808
+self.coAdaptiveFilterActive = 0
+self.coSlope1 = 0.956160843372345
+self.coOffset1 = -0.0255722105503082
+self.coZeroConc1 = 10.1312532424927
+self.coSpanConc1 = 40.1340942382813
+self.coPreCalConc1 = 40.1340942382813
+
+self.coTargetZeroConc1 = 0
+self.coTargetSpanConc1 = 40
+self.coConc2 = 0
+self.coSlope2 = 1
+self.coOffset2 = 0
+self.coZeroConc2 = 0
+self.coSpanConc2 = 400
+self.coPreCalConc2 = 0
+self.coTargetZeroConc2 = 0
+self.coTargetSpanConc2 = 40
+
+self.analogOutputFirmwarePartnumber = 9187
+self.analogOutputFirmwareRev = 0
+self.analogOutputFirmwareBuildNumber = 0
+self.analogOutputHardwareRev = 0
+self.analogOutputHardwarePartnumber = 0
+self.analogOutputModuleSerialNumber = 0
+self.analogOutputModuleRuntimeHours = 0
+self.analogOutputFirmwareVersionMismatch = 0
+
+self.aiBoxTemp = 38.4211921691895
+self.aiAtmosphericPressure = 99326.0703125
+self.aiSamplePressureShared = 7.45521593093872
+self.prigasPrec = 3
+
+self.hires00 = 8093
+self.hires01 = 99321.03125
+self.hires02 = 47.9878540039063
+self.hires03 = 38.4013290405273
+self.hires04 = 5.53036832809448
+self.hires05 = 0.00375241320580244
+self.hires06 = -20.3838272094727
+self.hires07 = 2504.84887695312
+self.hires08 = 2120.42114257812
+self.hires09 = 322.344329833984
+self.hires10 = 100.0
+self.hires11 = 130.103164672852
+self.hires12 = 7.45511674880981
+self.hires13 = 47.1840705871582
+self.hires14 = 67.9861145019531
+
+self.sysOkWarn = 0
+self.wheelTempWarn = 0
+self.benchTempWarn = 0
+self.sysInvalidConcWarning = 0
+self.sysWarnSourceWarning = 0
+self.sysWarnReset = 0
+self.sysWarnSampleFlow = 1
+self.sysWarnSampleTemp = 0
+self.sysWarnSamplePressure = 1
+
+
+
+
+const strFields = new RegExp([
+  // Existing fields
+  "status",
+  "Direction",
+  "Units",
+  "base64Data",
+  "base16Data",
+  "devAddr",
+  "deviceAddDecoded",
+  "codeRate",
+  "ID",
+  "gaseraDateTime",
+  "manufacturer",
+  "deviceName",
+  "parameter0",
+  "parameter1",
+  "parameter2",
+  "parameter3",
+  "parameter4",
+  "gaseraName",
+  "gaseraIP",
+  "netmask",
+  "gateway",
+  "taskName0",
+  "taskName1",
+  "taskName2",
+  "taskName3",
+  "taskName4",
+  "casNumbers",
+  "hostIP",
+  "humidityGroup",
+  "temperatureGroup",
+  "chamberTime",
+  "operationLabel",
+  "programName",
+  "changeLabel",
+  "programName1",
+  "programName2",
+  "programName3",
+  "programName4",
+  "programName5",
+  "dapGroup",
+  "majorVariable",
+  "program_counters",
+
+  // T640Variables 
+  // SVCOM1
+  "svCom1Protocol",
+  "svCom1ModemInitString",
+  "svCom1Parity",
+
+  // SVCOM2
+  "svCom2Protocol",
+  "svCom2ModemInitString",
+  "svCom2Parity",
+  "svCom2HandshakingMode",
+
+  // SVINFO
+  "svLanguageSelect",
+  "svClockFormat",
+  "svUserPressureUnits",
+
+  // NET
+  "networkAddressType",
+  "networkIpAddress",
+  "networkSubnetMask",
+  "networkDefaultGateway",
+  "networkDns1",
+  "networkDns2",
+
+  // FRM
+  "firmwareUpdateState",
+  "firmwareUpdateResult",
+  "firmwareUpdateErrorDetails",
+  "configDownloadUploadState",
+  "configDownloadUploadResult",
+  "configDownloadUploadErrorDetails",
+
+  // RMT
+  "remoteUpdateControl",
+  "remoteUpdateState",
+  "remoteUpdateVersion",
+
+  // DNH
+  "dustCalControl",
+  "dustCalState",
+  "homeMeter1",
+  "homeMeter2",
+  "homeMeter3",
+
+  // SLK
+  "leakCheckControl",
+  "leakCheckState",
+
+  // OPC
+  "opcSensorStatus",
+  "opcSensorMode",
+  "opcHeaterStatus",
+  "opcPumpControl",
+  "opcValveControl",
+  "opcUsbStorageState",
+  "opcSensorState",
+  "opcSensorFirmwareRev",
+  "opcSyslogFilesize",
+  "opcInstWarnMessage",
+  "opcInstErrorMessage",
+
+  // FLOW
+  "flow5CalControl",
+  "flow5CalState",
+  "flow11CalControl",
+  "flow11CalState",
+
+  // DUST
+  "dustCalStartTime",
+  "dustCalEndTime",
+  "dustCalActiveTime",
+
+  // DL
+  "dlTimeFormat",
+  "dlLastDownloadTime",
+  "dlDasDownloadFrom",
+  "dlDasDownloadT1",
+  "dlDasDownloadT2",
+  "dlFlush",
+  "dlLastFlushed",
+
+  // TAG
+  "tagsFlushControl",
+  "tagsFlushState",
+  "tagsFlushTimestamp",
+
+  // LINF
+  "instMode",
+
+  // TIME
+  "manualTimeServer",
+  "lastInstrumentTimeSynced",
+  "nextInstrumentTimeSync",
+  "timeSyncControl",
+  "timeSyncState",
+  "dateTimeTargetValue",
+
+  // COMM
+  "udpBroadcastIp",
+
+  // INFO
+  "driverVersion",
+  "packageVersion",
+  "osPlatform",
+  "osVersion",
+  "cfnetVersion",
+  "nativeAppState",
+  "instrumentMode",
+  "instrumentTime",
+  "systemTimeFormat",
+  "generalTimeFormat",
+  "alertsTimeFormat",
+  "datalogTimeFormat",
+  "instrumentShutdown",
+  "instrumentReset",
+  "reportGenerationUploadControl",
+  "reportGenerationUploadState",
+
+  // DAP
+  "dasUploadControl",
+  "dasUploadState",
+  "actionProgressTitle",
+  "pressureCalControl",
+  "pressureCalState",
+
+  // ISC
+  "lastInstrumentUpdateCheck",
+  "packageVersionNeedingUpdate",
+  
+    // New for N300 
+  "hessenVariation",
+  "hessenResponseMode",
+  "hessenGasName",
+  "boardFamily",
+  "boardMeasureLevel",
+  "svUserUnits"
+  
+].join("|"));
