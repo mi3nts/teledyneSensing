@@ -200,8 +200,8 @@ def main(loopInterval,hostIP):
         try:
             print("======= T700 ========")
             read, data = monitor.read_discrete_inputs()
-            if read:
-                pprint("Discrete Inputs:", data)
+            # if read:
+            #     print("Discrete Inputs:", data)
             time.sleep(0.25)
 
             print("=====================")
