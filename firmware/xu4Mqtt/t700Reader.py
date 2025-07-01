@@ -183,9 +183,91 @@ class T700:
             print(f"Error reading discrete inputs: {e}")
         
         return False, None
+    
+    def read_input_registers(self):
+        dateTime = datetime.now(timezone.utc)
+        try:
+            result = self.client.read_input_registers(address=0, count=50)
+            print(result)
+            print(result.registers)
+            time.sleep(3)
+
+            if not result.isError():
+                regs = result.registers
+
+                self.cal_gas_flow_rate         = decode_float(regs, 0)
+                self.diluent_flow_rate         = decode_float(regs, 2)
+                self.ozone_concentration       = decode_float(regs, 4)
+                # 6 is marked N/A – skipping
+                self.ozone_gen_flow_rate       = decode_float(regs, 8)
+                self.ozone_gen_lamp_drive_mv   = decode_float(regs, 10)
+                self.ozone_gen_lamp_temp_c     = decode_float(regs, 12)
+                self.cal_gas_pressure_psig     = decode_float(regs, 14)
+                self.diluent_pressure_psig     = decode_float(regs, 16)
+                self.regulator_pressure_psig   = decode_float(regs, 18)
+                self.internal_box_temp_c       = decode_float(regs, 20)
+                self.perm_tube1_temp_c         = decode_float(regs, 22)
+                self.perm_tube_flow_rate_lpm   = decode_float(regs, 24)
+                self.detector_measure_mv       = decode_float(regs, 26)
+                self.detector_reference_mv     = decode_float(regs, 28)
+                self.sample_flow_rate_lpm      = decode_float(regs, 30)
+                self.lamp_temp_c               = decode_float(regs, 32)
+                self.sample_pressure_inHg      = decode_float(regs, 34)
+                self.sample_temp_c             = decode_float(regs, 36)
+                self.photometer_slope          = decode_float(regs, 38)
+                self.photometer_offset_ppb     = decode_float(regs, 40)
+                self.ground_reference_mv       = decode_float(regs, 42)
+                self.precision_ref_mv          = decode_float(regs, 44)
+                self.perm_tube2_temp_c         = decode_float(regs, 46)
+                self.ozone_gen_fraction        = decode_float(regs, 48)
+
+                flow_data = OrderedDict([
+                    ("calGasFlowLPM"       , self.cal_gas_flow_rate),
+                    ("diluentFlowLPM"      , self.diluent_flow_rate),
+                    ("ozoneGenFlowLPM"     , self.ozone_gen_flow_rate),
+                    ("permTubeFlowRateLPM" , self.perm_tube_flow_rate_lpm),
+                    ("sampleFlowRateLPM"   , self.sample_flow_rate_lpm),
+                ])
+
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "FLOW", flow_data)
+                time.sleep(0.1)
+
+                pressure_data = OrderedDict([
+                    ("calGasPressurePSIG"    , self.cal_gas_pressure_psig),
+                    ("diluentPressurePSIG"   , self.diluent_pressure_psig),
+                    ("regulatorPressurePSIG" , self.regulator_pressure_psig),
+                    ("samplePressureInHg"    , self.sample_pressure_inHg),
+                ])
 
 
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PRES", pressure_data)
+                time.sleep(0.1)
 
+                temperature_data = OrderedDict([
+                    ("ozoneGenLampTempC" , self.ozone_gen_lamp_temp_c),
+                    ("internalBoxTempC"  , self.internal_box_temp_c),
+                    ("permTube1TempC"    , self.perm_tube1_temp_c),
+                    ("lampTempC"         , self.lamp_temp_c),
+                    ("sampleTempC"       , self.sample_temp_c),
+                    ("permTube2TempC"    , self.perm_tube2_temp_c),
+                ])
+
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "TEMP", temperature_data)
+                time.sleep(0.1)
+
+                return True, {
+                    self.input_float_fields[i]: decode_float(regs, i)
+                    for i in sorted(self.input_float_fields.keys())
+                }
+
+
+        except ModbusException as e:
+            print("[Error] Input Registers:", e)
+
+        return False, None
+
+
+    
 
 def main(loopInterval,hostIP):
 
@@ -202,6 +284,10 @@ def main(loopInterval,hostIP):
             read, data = monitor.read_discrete_inputs()
             # if read:
             #     print("Discrete Inputs:", data)
+            read, data = monitor.read_input_registers()
+            
+            # if read:
+            #     print("Discrete Inputs:", data)            
             time.sleep(0.25)
 
             print("=====================")
@@ -221,41 +307,7 @@ if __name__ == "__main__":
         
 
 
-    # def read_discrete_inputs(self):
-    #         dateTime  = datetime.now(timezone.utc)
-    #         try:
-    #             result                     = self.client.read_discrete_inputs(0, len(self.discrete_labels), unit=self.unit_id)
-    #             if not result.isError():
-    #                 (   self.boxTempWarning,
-    #                     self.sampleFlowWarning,
-    #                     self.internalSerialTimeout,
-    #                     self.systemResetWarning,
-    #                     self.sysOkWarning,
-    #                     self.sampleTemperatureWarning,
-    #                     self.bypassFlowWarning,
-    #                     self.systemFaultWarning
-    #                 ) = result.bits
-                    
-    #                 sensorDictionary = OrderedDict([
-    #                     ("dateTime"                , str(dateTime.strftime('%Y-%m-%d %H:%M:%S.%f'))),
-    #                     ("boxTempWarning"           , int(self.boxTempWarning)) ,
-    #                     ("sampleFlowWarning"        , int(self.sampleFlowWarning)),
-    #                     ("internalSerialTimeout"    , int(self.internalSerialTimeout)),
-    #                     ("systemResetWarning"       , int(self.systemResetWarning)),
-    #                     ("sysOkWarning"             , int(self.sysOkWarning)),
-    #                     ("sampleTemperatureWarning" , int(self.sampleTemperatureWarning)),
-    #                     ("bypassFlowWarning"        , int(self.bypassFlowWarning)),
-    #                     ("systemFaultWarning"       , int(self.systemFaultWarning)),
-    #                     ])       
-        
-    #                 mSR.sensorFinisher(dateTime,self.sensorIDPreModbus+"WRNS",sensorDictionary)
-        
-    #                 return True, dict(zip(self.discrete_labels, result.bits))
-    #         except ModbusException as e:
-    #             print("[Error] Discrete Inputs:", e)
-
-    #         return False, None
-        
+    
     # def read_coils(self):
     #     dateTime = datetime.now(timezone.utc)
     #     try:
@@ -288,278 +340,28 @@ if __name__ == "__main__":
 
     #     return False, None
 
-
-    # def read_input_registers(self):
-    #     dateTime = datetime.now(timezone.utc)
-    #     try:
-    #         result = self.client.read_input_registers(0, 120, unit=self.unit_id)
-    #         if not result.isError():
-    #             regs = result.registers
-    #             self.pumpTachometer                 = decode_float(regs, 0)
-    #             self.totalAmpHistParticles          = decode_float(regs, 2)
-    #             self.totalLenDistParticles          = decode_float(regs, 4)
-    #             self.pm10Realtime                   = decode_float(regs, 6)
-    #             self.pm2_5Realtime                  = decode_float(regs, 8)
-    #             self.pm10_2_5Realtime               = decode_float(regs, 10)
-    #             self.pm10StdRealtime                = decode_float(regs, 12)
-    #             self.pm10_1hrRollingAvg             = decode_float(regs, 14)
-    #             self.pm2_5_1hrRollingAvg            = decode_float(regs, 16)
-    #             self.pm10_2_5_1hrRollingAvg         = decode_float(regs, 18)
-    #             self.pm10_12hrRollingAvg            = decode_float(regs, 20)
-    #             self.pm2_5_12hrRollingAvg           = decode_float(regs, 22)
-    #             self.pm10_2_5_12hrRollingAvg        = decode_float(regs, 24)
-    #             self.pm10_24hrRollingAvg            = decode_float(regs, 26)
-    #             self.pm2_5_24hrRollingAvg           = decode_float(regs, 28)
-    #             self.pm10_2_5_24hrRollingAvg        = decode_float(regs, 30)
-    #             self.ledTemp                        = decode_float(regs, 32)
-    #             self.ambientPressure                = decode_float(regs, 34)
-    #             self.humidity                       = decode_float(regs, 36)
-    #             self.boxTemp                        = decode_float(regs, 38)
-    #             self.ambientTemp                    = decode_float(regs, 40)
-    #             self.ascTubeTemp                    = decode_float(regs, 42)
-    #             self.rhSensorTemp                   = decode_float(regs, 44)
-    #             self.sampleFlowMB                   = decode_float(regs, 46)
-    #             self.bypassFlowMB                   = decode_float(regs, 48)
-    #             self.totalFlowMB                    = decode_float(regs, 50)
-    #             self.signalLength                   = decode_float(regs, 52)
-    #             self.p3Value                        = decode_float(regs, 54)
-    #             self.pumpDuty                       = decode_float(regs, 56)
-    #             self.valveDuty                      = decode_float(regs, 58)
-    #             self.ascHeaterDuty                  = decode_float(regs, 60)
-    #             self.pm2_5StdRealtime               = decode_float(regs, 62)
-    #             self.pm1Realtime                    = decode_float(regs, 64)
-    #             self.pm1StdRealtime                 = decode_float(regs, 66)
-    #             self.pm1_1hrStandardizedAvg         = decode_float(regs, 68)
-    #             self.pm2_5_1hrStandardizedAvg       = decode_float(regs, 70)
-    #             self.pm10_1hrStandardizedAvg        = decode_float(regs, 72)
-    #             self.pm1_12hrStandardizedAvg        = decode_float(regs, 74)
-    #             self.pm2_5_12hrStandardizedAvg      = decode_float(regs, 76)
-    #             self.pm10_12hrStandardizedAvg       = decode_float(regs, 78)
-    #             self.pm1_24hrStandardizedAvg        = decode_float(regs, 80)
-    #             self.pm2_5_24hrStandardizedAvg      = decode_float(regs, 82)
-    #             self.pm10_24hrStandardizedAvg       = decode_float(regs, 84)
-    #             self.spanDeviation                  = decode_float(regs, 86)
-    #             self.spanDevTrack                   = decode_float(regs, 88)
-    #             self.pm1_1hrRollingAvg              = decode_float(regs, 90)
-    #             self.pm1_12hrRollingAvg             = decode_float(regs, 92)
-    #             self.pm1_24hrRollingAvg             = decode_float(regs, 94)
-    #             self.pmtotRealtime                  = decode_float(regs, 96)
-    #             self.pmtotStdRealtime               = decode_float(regs, 98)
-    #             self.pmtot_1hrRollingAvg            = decode_float(regs, 100)
-    #             self.pmtot_1hrStandardizedAvg       = decode_float(regs, 102)
-    #             self.pmtot_12hrRollingAvg           = decode_float(regs, 104)
-    #             self.pmtot_12hrStandardizedAvg      = decode_float(regs, 106)
-    #             self.pmtot_24hrRollingAvg           = decode_float(regs, 108)
-    #             self.pmtot_24hrStandardizedAvg      = decode_float(regs, 110)
-    #             self.sampleFlowCV                   = decode_float(regs, 112)
-    #             self.bypassFlowCV                   = decode_float(regs, 114)
-    #             self.totalFlowCV                    = decode_float(regs, 116)
-    #             self.totalParticleConc              = decode_float(regs, 118)
-
-    #             realtimePmDict                      = OrderedDict([
-    #                 ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"      , self.pm1Realtime),
-    #                 ("pm2_5"    , self.pm2_5Realtime),
-    #                 ("pm2_5to10", self.pm10_2_5Realtime),
-    #                 ("pm10"     , self.pm10Realtime),
-    #                 ("pmTotal"  , self.pmtotRealtime)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "RTPM", realtimePmDict )
-    #             time.sleep(.1)
-
-    #             stdRealtimePmDict = OrderedDict([
-    #                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"     , self.pm1StdRealtime),
-    #                 ("pm2_5"   , self.pm2_5StdRealtime),
-    #                 ("pm10"    , self.pm10StdRealtime),
-    #                 ("pmTotal" , self.pmtotStdRealtime)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "STDRTPM", stdRealtimePmDict  )
-    #             time.sleep(.1)
-
-    #             pm1hrRollingDict                    = OrderedDict([
-    #                 ("dateTime"                   , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"      , self.pm1_1hrRollingAvg),
-    #                 ("pm2_5"    , self.pm2_5_1hrRollingAvg),
-    #                 ("pm2_5to10", self.pm10_2_5_1hrRollingAvg),
-    #                 ("pm10"     , self.pm10_1hrRollingAvg),
-    #                 ("pmTotal"  , self.pmtot_1hrRollingAvg),
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R1HPM",  pm1hrRollingDict )
-    #             time.sleep(.1)
-
-    #             pm12hrRollingDict = OrderedDict([
-    #                 ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"      , self.pm1_12hrRollingAvg),
-    #                 ("pm2_5"    , self.pm2_5_12hrRollingAvg),
-    #                 ("pm2_5to10", self.pm10_2_5_12hrRollingAvg),
-    #                 ("pm10"     , self.pm10_12hrRollingAvg),
-    #                 ("pmTotal"  , self.pmtot_12hrRollingAvg),                
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R12HPM",  pm12hrRollingDict )
-    #             time.sleep(.1)
-
-    #             pm24hrRollingDict = OrderedDict([
-    #                 ("dateTime" , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"      , self.pm1_24hrRollingAvg),
-    #                 ("pm2_5"    , self.pm2_5_24hrRollingAvg),
-    #                 ("pm2_5to10", self.pm10_2_5_24hrRollingAvg),
-    #                 ("pm10"     , self.pm10_24hrRollingAvg),
-    #                 ("pmTotal"  , self.pmtot_24hrRollingAvg),
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "R24HPM",  pm24hrRollingDict )
-    #             time.sleep(.1)
-
-    #             pm1hrStandardizedDict = OrderedDict([
-    #                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"     , self.pm1_1hrStandardizedAvg),
-    #                 ("pm2_5"   , self.pm2_5_1hrStandardizedAvg),
-    #                 ("pm10"    , self.pm10_1hrStandardizedAvg),
-    #                 ("pmTotal" , self.pmtot_1hrStandardizedAvg)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S1HPM",  pm1hrStandardizedDict )
-    #             time.sleep(.1)
-
-    #             pm12hrStandardizedDict = OrderedDict([
-    #                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"     , self.pm1_12hrStandardizedAvg),
-    #                 ("pm2_5"   , self.pm2_5_12hrStandardizedAvg),
-    #                 ("pm10"    , self.pm10_12hrStandardizedAvg),
-    #                 ("pmTotal" , self.pmtot_12hrStandardizedAvg)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S12HPM",  pm12hrStandardizedDict )
-    #             time.sleep(.1)
-
-    #             pm24hrStandardizedDict = OrderedDict([
-    #                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pm1"     , self.pm1_24hrStandardizedAvg),
-    #                 ("pm2_5"   , self.pm2_5_24hrStandardizedAvg),
-    #                 ("pm10"    , self.pm10_24hrStandardizedAvg),
-    #                 ("pmTotal" , self.pmtot_24hrStandardizedAvg)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "S24HPM",  pm24hrStandardizedDict )
-    #             time.sleep(.1)
-
-    #             particleHistogramCounts    = OrderedDict([
-    #                 ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("totalAmpHistParticles" , self.totalAmpHistParticles),
-    #                 ("totalLenDistParticles" , self.totalLenDistParticles),
-    #                 ("totalParticleConc"     , self.totalParticleConc)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PHC",  particleHistogramCounts )
-    #             time.sleep(.1)
-
-    #             climateDict                          = OrderedDict([
-    #                 ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("ledTemp"            , self.ledTemp),
-    #                 ("pressure"           , self.ambientPressure),
-    #                 ("humidity"           , self.humidity),
-    #                 ("boxTemp"            , self.boxTemp),
-    #                 ("temperature"        , self.ambientTemp),
-    #                 ("ascTubeTemp"        , self.ascTubeTemp),
-    #                 ("rhSensorTemp"       , self.rhSensorTemp)
-    #             ])
-
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CLM",  climateDict )
-    #             time.sleep(.1)
-
-    #             pumpAndFlowDict = OrderedDict([
-    #                 ("dateTime"           , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pumpTachometer"     , self.pumpTachometer),
-    #                 ("sampleFlow"         , self.sampleFlowMB),
-    #                 ("bypassFlow"         , self.bypassFlowMB),
-    #                 ("totalFlow"          , self.totalFlowMB),
-    #                 ("signalLength"       , self.signalLength),
-    #                 ("p3Value"            , self.p3Value),
-    #                 ("pumpDuty"           , self.pumpDuty),
-    #                 ("valveDuty"          , self.valveDuty),
-    #                 ("ascHeaterDuty"      , self.ascHeaterDuty),
-    #                 ("sampleFlowCV"       , self.sampleFlowCV),
-    #                 ("bypassFlowCV"       , self.bypassFlowCV),
-    #                 ("totalFlowCV"        , self.totalFlowCV),
-    #             ])
-
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PV",  pumpAndFlowDict )
-    #             time.sleep(.1)
-                
-    #             return True, {
-    #                 self.input_float_fields[i]: decode_float(regs, i)
-    #                 for i in sorted(self.input_float_fields.keys())
-    #             }
-    #     except ModbusException as e:
-    #         print("[Error] Input Registers:", e)
-
-    #     return False, None            
-    
-    # def read_holding_registers(self):
-    #     dateTime = datetime.now(timezone.utc)
-    #     try:
-    #         result = self.client.read_holding_registers(0, 32, unit=self.unit_id)
-    #         # PMT Voltage                                   0.000
-    #         # PMT Offset                                    0.000
-    #         # PMT HVPS                                      0.000
-    #         # 5LPM Flow Cal                                 0.992
-    #         # Bypass Flow Cal                               1.000
-    #         # Pressure Cal                                  1.008
-    #         # RH Setpoint                                  35.000
-    #         # Sample Flow Setpoint                          5.000
-    #         # Bypass Flow Setpoint                         11.670
-    #         # RH Sensor Slope                               1.000
-    #         # KS10 PM10 Slope                               1.000
-    #         # KS2.5 PM2.5 Slope                             1.000
-    #         # KS1 PM1 Slope                                 1.000
-    #         # KO10 PM10 Offset                              0.000
-    #         # KO2.5 PM2.5 Offset                            0.000
-    #         # KO1 PM1 Offset                                0.000
-
-
-    #         if not result.isError():
-    #             regs = result.registers
-    #             self.pmtVoltage                     = decode_float(regs, 0)
-    #             self.pmtOffset                      = decode_float(regs, 2)
-    #             self.pmtHVPS                        = decode_float(regs, 4)
-    #             self.fiveLPMFlowCal                 = decode_float(regs, 6)
-    #             self.bypassFlowCal                  = decode_float(regs, 8)
-    #             self.pressureCal                    = decode_float(regs, 10)
-    #             self.rhSetpoint                     = decode_float(regs, 12)
-    #             self.sampleFlowSetpoint             = decode_float(regs, 14)
-    #             self.bypassFlowSetpoint             = decode_float(regs, 16)
-    #             self.rhSensorSlope                  = decode_float(regs, 18)
-    #             self.ks10PM10Slope                  = decode_float(regs, 20)
-    #             self.ks2_5PM2_5Slope                = decode_float(regs, 22)
-    #             self.ks1PM1Slope                    = decode_float(regs, 24)
-    #             self.ko10PM10Offset                 = decode_float(regs, 26)
-    #             self.ko2_5PM2_5Offset               = decode_float(regs, 28)
-    #             self.ko1PM1Offset                   = decode_float(regs, 30)
-                
-    #             calibrationDict              = OrderedDict([
-    #                 ("dateTime"              , dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-    #                 ("pmtVoltage"            , self.pmtVoltage),
-    #                 ("pmtOffset"             , self.pmtOffset),
-    #                 ("pmtHVPS"               , self.pmtHVPS),
-    #                 ("fiveLPMFlowCal"        , self.fiveLPMFlowCal),
-    #                 ("bypassFlowCal"         , self.bypassFlowCal),
-    #                 ("pressureCal"           , self.pressureCal),
-    #                 ("rhSetpoint"            , self.rhSetpoint),
-    #                 ("sampleFlowSetpoint"    , self.sampleFlowSetpoint),
-    #                 ("bypassFlowSetpoint"    , self.bypassFlowSetpoint),
-    #                 ("rhSensorSlope"         , self.rhSensorSlope),
-    #                 ("ks10PM10Slope"         , self.ks10PM10Slope),
-    #                 ("ks2_5PM2_5Slope"       , self.ks2_5PM2_5Slope),
-    #                 ("ks1PM1Slope"           , self.ks1PM1Slope),
-    #                 ("ko10PM10Offset"        , self.ko10PM10Offset),
-    #                 ("ko2_5PM2_5Offset"      , self.ko2_5PM2_5Offset),
-    #                 ("ko1PM1Offset"          , self.ko1PM1Offset)
-    #             ])
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CALV", calibrationDict )
-    #             time.sleep(.1)                
-
-    #             return True, {
-    #                 self.holding_float_fields[i]: decode_float(regs, i)
-    #                 for i in sorted(self.holding_float_fields.keys())
-    #             }
-    #     except ModbusException as e:
-    #         print("[Error] Input Registers:", e)
-
-    #     return False, None                
-    
+# 0 Actual cal. gas flow rate LPM 
+# 2 Actual diluent flow rate LPM 
+# 4 Photometer measured ozone concentration PPB 
+# 6 N/A — 
+# 8 Ozone generator flow rate LPM 
+# 10 Ozone generator lamp drive mV 
+# 12 Ozone generator lamp temperature °C 
+# 14 Cal. gas pressure PSIG 
+# 16 Diluent pressure PSIG 
+# 18 Regulator pressure PSIG 
+# 20 Internal box temperature °C 
+# 22 Permeation tube #1 temperature 3 °C 
+# 24 Permeation tube flow rate 3 LPM 
+# 26 Photometer detector measure reading mV 
+# 28 Photometer detector reference reading mV 
+# 30 Photometer sample flow rate LPM 
+# 32 Photometer lamp temperature °C 
+# 34 Photometer sample pressure Inches Hg 
+# 36 Photometer sample temperature °C 
+# 38 Photometer slope computed during zero/span bench calibration — 
+# 40 Photometer offset computed during zero/span bench calibration PPB 
+# 42 Ground reference mV 
+# 44 Precision 4.096 mV reference mV 
+# 46 Permeation tube #2 temperature 1 °C 
+# 48 Ozone Gen Fraction 2 — 
