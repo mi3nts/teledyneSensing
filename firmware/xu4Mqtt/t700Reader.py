@@ -196,23 +196,21 @@ def main(loopInterval,hostIP):
     # monitor.read_api(True)  
     # time.sleep(0.1)      
 
-    # while True:
-        # try:
-    print("======= T700 ========")
-    read, data = monitor.read_discrete_inputs()
-    print(read)
-    print(data)
-    if read:
-        print("Discrete Inputs:", data)
-    time.sleep(0.25)
+    while True:
+        try:
+            print("======= T700 ========")
+            read, data = monitor.read_discrete_inputs()
+            if read:
+                print("Discrete Inputs:", data)
+            time.sleep(0.25)
 
-    print("=====================")
-    startTime = mSR.delayMints(time.time() - startTime,loopInterval)
-        
-        # except Exception as e:
-        #     print(e)
-        #     time.sleep(loopInterval)
-        
+            print("=====================")
+            startTime = mSR.delayMints(time.time() - startTime,loopInterval)
+
+        except Exception as e:
+            print(e)
+            time.sleep(loopInterval)
+    
 
         
 if __name__ == "__main__":
