@@ -22,7 +22,6 @@ def decode_float(regs, index):
 class T640:
     def __init__(self, host: str, port: int = 502, api_port: int = 8180 ,unit_id=1):
         
-        
         self.client = ModbusTcpClient(host, port=port)
         if not self.client.connect():
             print(f"Unable to connect to Modbus server at {host}:{port}")
@@ -52,7 +51,6 @@ class T640:
             "Control Relay 39",
             "Maintenance Mode Enabled"
         ]
-
 
         self.input_float_fields = {
             0:  "Pump Tachometer Reading",
