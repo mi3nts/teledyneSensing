@@ -12,7 +12,7 @@ from mintsXU4 import mintsSensorReader as mSR
 import sys 
 import re 
 import traceback
-
+from pprint import pprint
 
 loopInterval = 10 
 hostIP       = "192.168.20.109"
@@ -201,7 +201,7 @@ def main(loopInterval,hostIP):
             print("======= T700 ========")
             read, data = monitor.read_discrete_inputs()
             if read:
-                print("Discrete Inputs:", data)
+                pprint("Discrete Inputs:", data)
             time.sleep(0.25)
 
             print("=====================")
