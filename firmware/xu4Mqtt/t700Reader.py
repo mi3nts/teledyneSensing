@@ -221,10 +221,25 @@ class T700:
                 self.perm_tube2_temp_c         = decode_float(regs, 46)
                 self.ozone_gen_fraction        = decode_float(regs, 48)
 
+                
+                ozone_data = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("ozoneConcPPB"        , self.ozone_concentration),
+                    ("ozoneGenFlowLPM"     , self.ozone_gen_flow_rate),
+                    ("ozoneGenLampDriveMV" , self.ozone_gen_lamp_drive_mv),
+                    ("ozoneGenLampTempC"   , self.ozone_gen_lamp_temp_c),
+                    ("ozoneGenFraction"    , self.ozone_gen_fraction),
+                ])
+                
+                
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "O3",ozone_data)
+                time.sleep(0.1)
+                
+                
                 flow_data = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("calGasFlowLPM"       , self.cal_gas_flow_rate),
                     ("diluentFlowLPM"      , self.diluent_flow_rate),
-                    ("ozoneGenFlowLPM"     , self.ozone_gen_flow_rate),
                     ("permTubeFlowRateLPM" , self.perm_tube_flow_rate_lpm),
                     ("sampleFlowRateLPM"   , self.sample_flow_rate_lpm),
                 ])
@@ -233,6 +248,7 @@ class T700:
                 time.sleep(0.1)
 
                 pressure_data = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("calGasPressurePSIG"    , self.cal_gas_pressure_psig),
                     ("diluentPressurePSIG"   , self.diluent_pressure_psig),
                     ("regulatorPressurePSIG" , self.regulator_pressure_psig),
@@ -244,16 +260,42 @@ class T700:
                 time.sleep(0.1)
 
                 temperature_data = OrderedDict([
-                    ("ozoneGenLampTempC" , self.ozone_gen_lamp_temp_c),
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
                     ("internalBoxTempC"  , self.internal_box_temp_c),
                     ("permTube1TempC"    , self.perm_tube1_temp_c),
+                    ("permTube2TempC"    , self.perm_tube2_temp_c),
                     ("lampTempC"         , self.lamp_temp_c),
                     ("sampleTempC"       , self.sample_temp_c),
-                    ("permTube2TempC"    , self.perm_tube2_temp_c),
                 ])
 
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "TEMP", temperature_data)
                 time.sleep(0.1)
+
+
+
+
+                photometer_data = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("detectorMeasureMV"   , self.detector_measure_mv),
+                    ("detectorReferenceMV" , self.detector_reference_mv),
+                    ("photometerSlope"     , self.photometer_slope),
+                    ("photometerOffsetPPB" , self.photometer_offset_ppb),
+                ])
+
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "PHOT", photometer_data)
+                time.sleep(0.1)
+
+
+                electrical_data = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("groundRefMV"    , self.ground_reference_mv),
+                    ("precisionRefMV" , self.precision_ref_mv),
+                ])
+
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "ELEC", electrical_data)
+                time.sleep(0.1)
+
+
 
                 return True, {
                     self.input_float_fields[i]: decode_float(regs, i)
