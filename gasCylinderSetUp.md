@@ -1,5 +1,17 @@
 # Gas Regulator Installation and Operation Guide
 
+## 🔍 Regulator in Use
+
+Currently, we are using the following regulator:
+
+![AirgasRegulator](https://github.com/user-attachments/assets/424f8644-18fa-4c49-92f6-2272ac4b24b5)
+
+**Single-Stage Brass 0–100 psi Analytical Cylinder Regulator – CGA-350 with Needle Outlet Valve**  
+This regulator is ideal for precise control of flammable gases such as hydrogen in analytical applications.
+
+[View product on Airgas](https://www.airgas.com/p/Y11244D350-AG)
+
+
 ## 🔧 Installing a Gas Regulator
 
 1. **Secure the gas cylinder** in an upright position using a chain or strap to prevent tipping.
@@ -40,13 +52,4 @@
 7. If needed, **remove the regulator**:
    - For CGA-350 (left-handed), turn the nut **clockwise** to loosen.
 
-## 🔍 Regulator in Use
 
-Currently, we are using the following regulator:
-
-![AirgasRegulator](https://github.com/user-attachments/assets/424f8644-18fa-4c49-92f6-2272ac4b24b5)
-
-**Single-Stage Brass 0–100 psi Analytical Cylinder Regulator – CGA-350 with Needle Outlet Valve**  
-This regulator is ideal for precise control of flammable gases such as hydrogen in analytical applications.
-
-[View product on Airgas](https://www.airgas.com/p/Y11244D350-AG)
