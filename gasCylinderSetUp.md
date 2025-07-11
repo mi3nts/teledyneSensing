@@ -1,6 +1,6 @@
 # Gas Regulator Installation and Operation Guide
 
-## 🔍 Regulator in Use
+## 🔍 Regulator in use for Cylinder 01 
 
 Currently, we are using the following regulator:
 
