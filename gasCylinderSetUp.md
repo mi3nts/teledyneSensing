@@ -52,7 +52,7 @@ This regulator is ideal for precise control of flammable gases such as hydrogen 
 7. If needed, **remove the regulator**:
    - For CGA-350 (left-handed), turn the nut **clockwise** to loosen.
 
-# Cylinder Details 
+# Gas Cylinder Details 
 ## Cylinder 01 
 ![cylinder01](https://github.com/user-attachments/assets/efd2bea8-c85a-47a2-bbeb-d3fc4b2d2fb7)
 ## Cylinder 02
