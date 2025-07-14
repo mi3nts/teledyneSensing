@@ -363,7 +363,7 @@ class T700:
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CONTROL", control_info)  
                 time.sleep(0.1)
                 
-                return True, [resultStatus]
+                return True, [resultStatus,resultControls]
             
         except ModbusException as e:
             print("[Error] Coils:", e)
@@ -405,16 +405,18 @@ def main(loopInterval,hostIP):
             #     print("Discrete Inputs:", data)
             # time.sleep(0.25)
             
-            # read, data = monitor.read_input_registers()
-            # if read:
-            #     print("Discrete Inputs:", data)   
+            read, data = monitor.read_input_registers()
+            if read:
+                print("Discrete Inputs:", data)   
             time.sleep(0.25)         
             
-            monitor.read_coils()
-            time.sleep(0.25)
-
+            read, data = monitor.read_coils()
+            if read:
+                print("Discrete Inputs:", data)   
+            time.sleep(0.25)      
+    
             if initialRead:
-                print("Initial Read Complete")
+                print("Initial Read Complete - Write Coil 0 - Sequence 0")
                 monitor.write_coil(0, True)
                 initialRead = False
 
@@ -436,62 +438,3 @@ if __name__ == "__main__":
     main(loopInterval,hostIP)
         
 
-
-    
-    # def read_coils(self):
-    #     dateTime = datetime.now(timezone.utc)
-    #     try:
-    #         result = self.client.read_coils(0, len(self.coil_labels), unit=self.unit_id)
-    #         print(result.bits)
-    #         if not result.isError():
-    #             (
-    #                 self.controlRelay36,
-    #                 self.controlRelay37,
-    #                 self.controlRelay38,
-    #                 self.controlRelay39,
-    #                 self.maintenanceMode
-    #             ) = result.bits[:len(self.coil_labels)] 
-
-    #             sensorDictionary = OrderedDict([
-    #                 ("dateTime"       , str(dateTime.strftime('%Y-%m-%d %H:%M:%S.%f'))),
-    #                 ("controlRelay36" , int(self.controlRelay36)),
-    #                 ("controlRelay37" , int(self.controlRelay37)),
-    #                 ("controlRelay38" , int(self.controlRelay38)),
-    #                 ("controlRelay39" , int(self.controlRelay39)),
-    #                 ("maintenanceMode", int(self.maintenanceMode)),
-    #             ])
-
-    #             mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "COIL", sensorDictionary)
-
-    #             return True, dict(zip(self.coil_labels, result.bits))
-
-    #     except ModbusException as e:
-    #         print("[Error] Coils:", e)
-
-    #     return False, None
-
-# 0 Actual cal. gas flow rate LPM 
-# 2 Actual diluent flow rate LPM 
-# 4 Photometer measured ozone concentration PPB 
-# 6 N/A — 
-# 8 Ozone generator flow rate LPM 
-# 10 Ozone generator lamp drive mV 
-# 12 Ozone generator lamp temperature °C 
-# 14 Cal. gas pressure PSIG 
-# 16 Diluent pressure PSIG 
-# 18 Regulator pressure PSIG 
-# 20 Internal box temperature °C 
-# 22 Permeation tube #1 temperature 3 °C 
-# 24 Permeation tube flow rate 3 LPM 
-# 26 Photometer detector measure reading mV 
-# 28 Photometer detector reference reading mV 
-# 30 Photometer sample flow rate LPM 
-# 32 Photometer lamp temperature °C 
-# 34 Photometer sample pressure Inches Hg 
-# 36 Photometer sample temperature °C 
-# 38 Photometer slope computed during zero/span bench calibration — 
-# 40 Photometer offset computed during zero/span bench calibration PPB 
-# 42 Ground reference mV 
-# 44 Precision 4.096 mV reference mV 
-# 46 Permeation tube #2 temperature 1 °C 
-# 48 Ozone Gen Fraction 2 —
