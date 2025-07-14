@@ -1,4 +1,3 @@
-
 from pymodbus.client import ModbusTcpClient
 from pymodbus.exceptions import ModbusException
 import struct
@@ -308,8 +307,86 @@ class T700:
 
         return False, None
 
+    def get_true_indices_padded(self,bool_list):
+        true_indices = [i for i, val in enumerate(bool_list) if val]
+        return true_indices[:5] + [-1] * (5 - len(true_indices))
 
+    def read_coils(self):
+        dateTime = datetime.now(timezone.utc)
+        try:
+            resultStatus   = self.client.read_coils(address=0, count=102)
+            resultControls = self.client.read_coils(address=200, count=12)
+
+            if not resultStatus.isError():
+                # Unpack up to 102 coils
+                # print(resultStatus.bits)
+                print(resultControls.bits)
+                sequences       = resultStatus.bits[:100]
+                purgeStatus     = resultStatus.bits[100]
+                standByStatus   = resultStatus.bits[101]
+                sequenceIndices = self.get_true_indices_padded(sequences)
+                # print("Sequences:", sequences)
+                # print("Purge Status:", purgeStatus)       
+                # print("Standby Status:", standByStatus)
+                # print("Sequence Indices:", sequenceIndices)
+      
+                status_info = OrderedDict([
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("sequence00", int(sequenceIndices[0])),
+                    ("sequence01", int(sequenceIndices[1])),
+                    ("sequence02", int(sequenceIndices[2])),           
+                    ("sequence03", int(sequenceIndices[3])),
+                    ("sequence04", int(sequenceIndices[4])),
+                    ("purgeStatus", int(purgeStatus)),
+                    ("standByStatus", int(standByStatus)),
+                ])
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "STATUS", status_info)
+                time.sleep(0.1)
+
+
+                control_info = OrderedDict([    
+                    ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
+                    ("controlOut01", int(resultControls.bits[0])),
+                    ("controlOut02", int(resultControls.bits[1])),
+                    ("controlOut03", int(resultControls.bits[2])),
+                    ("controlOut04", int(resultControls.bits[3])),
+                    ("controlOut05", int(resultControls.bits[4])),
+                    ("controlOut06", int(resultControls.bits[5])),
+                    ("controlOut07", int(resultControls.bits[6])),
+                    ("controlOut08", int(resultControls.bits[7])),
+                    ("controlOut09", int(resultControls.bits[8])),
+                    ("controlOut10", int(resultControls.bits[9])),
+                    ("controlOut11", int(resultControls.bits[10])),
+                    ("controlOut12", int(resultControls.bits[11])),
+                ])
+
+                mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CONTROL", control_info)  
+                time.sleep(0.1)
+                
+                return True, [resultStatus]
+            
+        except ModbusException as e:
+            print("[Error] Coils:", e)
+        except Exception as e:
+            print("[Error] Coils (General):", e)
+        return False, None
     
+    def write_coil(self, address, value):
+        """
+        Write a single coil (boolean) value to the given address.
+        address: int - coil address
+        value: bool - True (set) or False (reset)
+        Returns the result object from pymodbus.
+        """
+        try:
+            result = self.client.write_coil(address= address, value=value)
+            if result.isError():
+                print(f"Failed to write coil at address {address}")
+                return False
+            return True
+        except Exception as e:
+            print(f"Error writing coil at address {address}: {e}")
+            return False
 
 def main(loopInterval,hostIP):
 
@@ -319,18 +396,27 @@ def main(loopInterval,hostIP):
     time.sleep(1)
     # monitor.read_api(True)  
     # time.sleep(0.1)      
-
+    initialRead = True
     while True:
         try:
             print("======= T700 ========")
-            read, data = monitor.read_discrete_inputs()
+            # read, data = monitor.read_discrete_inputs()
             # if read:
             #     print("Discrete Inputs:", data)
-            read, data = monitor.read_input_registers()
+            # time.sleep(0.25)
             
+            # read, data = monitor.read_input_registers()
             # if read:
-            #     print("Discrete Inputs:", data)            
+            #     print("Discrete Inputs:", data)   
+            time.sleep(0.25)         
+            
+            monitor.read_coils()
             time.sleep(0.25)
+
+            if initialRead:
+                print("Initial Read Complete")
+                monitor.write_coil(0, True)
+                initialRead = False
 
             print("=====================")
             startTime = mSR.delayMints(time.time() - startTime,loopInterval)
@@ -339,8 +425,10 @@ def main(loopInterval,hostIP):
             print(e)
             time.sleep(loopInterval)
     
+        return False, None
+    
 
-        
+
 if __name__ == "__main__":
     print("=============")
     print("    MINTS    ")
@@ -406,4 +494,4 @@ if __name__ == "__main__":
 # 42 Ground reference mV 
 # 44 Precision 4.096 mV reference mV 
 # 46 Permeation tube #2 temperature 1 °C 
-# 48 Ozone Gen Fraction 2 — 
+# 48 Ozone Gen Fraction 2 —
