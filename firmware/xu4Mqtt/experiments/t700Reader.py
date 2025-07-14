@@ -388,53 +388,53 @@ class T700:
             print(f"Error writing coil at address {address}: {e}")
             return False
 
-def main(loopInterval,hostIP):
+# def main(loopInterval,hostIP):
 
-    monitor = T700(host=hostIP)  # Or your device IP
-    time.sleep(1)
-    startTime = time.time()
-    time.sleep(1)
-    # monitor.read_api(True)  
-    # time.sleep(0.1)      
-    initialRead = True
-    while True:
-        try:
-            print("======= T700 ========")
-            # read, data = monitor.read_discrete_inputs()
-            # if read:
-            #     print("Discrete Inputs:", data)
-            # time.sleep(0.25)
+#     monitor = T700(host=hostIP)  # Or your device IP
+#     time.sleep(1)
+#     startTime = time.time()
+#     time.sleep(1)
+#     # monitor.read_api(True)  
+#     # time.sleep(0.1)      
+#     initialRead = True
+#     while True:
+#         try:
+#             print("======= T700 ========")
+#             # read, data = monitor.read_discrete_inputs()
+#             # if read:
+#             #     print("Discrete Inputs:", data)
+#             # time.sleep(0.25)
             
-            read, data = monitor.read_input_registers()
-            if read:
-                print("Discrete Inputs:", data)   
-            time.sleep(0.25)         
+#             read, data = monitor.read_input_registers()
+#             if read:
+#                 print("Discrete Inputs:", data)   
+#             time.sleep(0.25)         
             
-            read, data = monitor.read_coils()
-            if read:
-                print("Discrete Inputs:", data)   
-            time.sleep(0.25)      
+#             read, data = monitor.read_coils()
+#             if read:
+#                 print("Discrete Inputs:", data)   
+#             time.sleep(0.25)      
     
-            if initialRead:
-                print("Initial Read Complete - Write Coil 0 - Sequence 0")
-                monitor.write_coil(0, True)
-                initialRead = False
+#             if initialRead:
+#                 print("Initial Read Complete - Write Coil 0 - Sequence 0")
+#                 monitor.write_coil(0, True)
+#                 initialRead = False
 
-            print("=====================")
-            startTime = mSR.delayMints(time.time() - startTime,loopInterval)
+#             print("=====================")
+#             startTime = mSR.delayMints(time.time() - startTime,loopInterval)
 
-        except Exception as e:
-            print(e)
-            time.sleep(loopInterval)
+#         except Exception as e:
+#             print(e)
+#             time.sleep(loopInterval)
     
-        return False, None
+#         return False, None
     
 
 
-if __name__ == "__main__":
-    print("=============")
-    print("    MINTS    ")
-    print("=============")
-    main(loopInterval,hostIP)
+# if __name__ == "__main__":
+#     print("=============")
+#     print("    MINTS    ")
+#     print("=============")
+#     main(loopInterval,hostIP)
         
 
