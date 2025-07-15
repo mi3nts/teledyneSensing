@@ -1,151 +1,201 @@
-cylinder01:
+Gas-Diluent Schedule:
 - index: 0
-  flow_SLPM: 1.99
-  ch4_ppm: 0.13
+  flow_SLPM: 0.5
+  ch4_ppm: 0.57
+  time_seconds: 60
 - index: 1
-  flow_SLPM: 1.17
-  ch4_ppm: 0.23
+  flow_SLPM: 0.5
+  ch4_ppm: 0.57
+  time_seconds: 150
 - index: 2
-  flow_SLPM: 0.77
-  ch4_ppm: 0.32
+  flow_SLPM: 0.5
+  ch4_ppm: 0.57
+  time_seconds: 300
 - index: 3
-  flow_SLPM: 0.6
-  ch4_ppm: 0.42
+  flow_SLPM: 0.5
+  ch4_ppm: 0.57
+  time_seconds: 450
 - index: 4
   flow_SLPM: 0.5
-  ch4_ppm: 0.52
+  ch4_ppm: 0.57
+  time_seconds: 600
 - index: 5
-  flow_SLPM: 0.55
-  ch4_ppm: 0.62
+  flow_SLPM: 0.51
+  ch4_ppm: 1.11
+  time_seconds: 60
 - index: 6
-  flow_SLPM: 0.5
-  ch4_ppm: 0.72
+  flow_SLPM: 0.51
+  ch4_ppm: 1.11
+  time_seconds: 150
 - index: 7
-  flow_SLPM: 0.52
-  ch4_ppm: 0.82
+  flow_SLPM: 0.51
+  ch4_ppm: 1.11
+  time_seconds: 300
 - index: 8
   flow_SLPM: 0.51
-  ch4_ppm: 0.92
+  ch4_ppm: 1.11
+  time_seconds: 450
 - index: 9
   flow_SLPM: 0.51
-  ch4_ppm: 1.02
+  ch4_ppm: 1.11
+  time_seconds: 600
 - index: 10
   flow_SLPM: 0.5
-  ch4_ppm: 1.12
+  ch4_ppm: 1.65
+  time_seconds: 60
 - index: 11
   flow_SLPM: 0.5
-  ch4_ppm: 1.22
+  ch4_ppm: 1.65
+  time_seconds: 150
 - index: 12
   flow_SLPM: 0.5
-  ch4_ppm: 1.32
+  ch4_ppm: 1.65
+  time_seconds: 300
 - index: 13
-  flow_SLPM: 0.51
-  ch4_ppm: 1.42
+  flow_SLPM: 0.5
+  ch4_ppm: 1.65
+  time_seconds: 450
 - index: 14
-  flow_SLPM: 0.51
-  ch4_ppm: 1.52
+  flow_SLPM: 0.5
+  ch4_ppm: 1.65
+  time_seconds: 600
 - index: 15
-  flow_SLPM: 0.51
-  ch4_ppm: 1.62
+  flow_SLPM: 0.5
+  ch4_ppm: 2.19
+  time_seconds: 60
 - index: 16
-  flow_SLPM: 0.51
-  ch4_ppm: 1.72
+  flow_SLPM: 0.5
+  ch4_ppm: 2.19
+  time_seconds: 150
 - index: 17
   flow_SLPM: 0.5
-  ch4_ppm: 1.82
+  ch4_ppm: 2.19
+  time_seconds: 300
 - index: 18
-  flow_SLPM: 0.51
-  ch4_ppm: 1.92
+  flow_SLPM: 0.5
+  ch4_ppm: 2.19
+  time_seconds: 450
 - index: 19
   flow_SLPM: 0.5
-  ch4_ppm: 2.02
+  ch4_ppm: 2.19
+  time_seconds: 600
 - index: 20
   flow_SLPM: 0.51
-  ch4_ppm: 2.12
+  ch4_ppm: 2.74
+  time_seconds: 60
 - index: 21
   flow_SLPM: 0.51
-  ch4_ppm: 2.22
+  ch4_ppm: 2.74
+  time_seconds: 150
 - index: 22
   flow_SLPM: 0.51
-  ch4_ppm: 2.31
+  ch4_ppm: 2.74
+  time_seconds: 300
 - index: 23
   flow_SLPM: 0.51
-  ch4_ppm: 2.41
+  ch4_ppm: 2.74
+  time_seconds: 450
 - index: 24
   flow_SLPM: 0.51
-  ch4_ppm: 2.51
+  ch4_ppm: 2.74
+  time_seconds: 600
 - index: 25
   flow_SLPM: 0.51
-  ch4_ppm: 2.61
+  ch4_ppm: 3.28
+  time_seconds: 60
 - index: 26
   flow_SLPM: 0.51
-  ch4_ppm: 2.71
+  ch4_ppm: 3.28
+  time_seconds: 150
 - index: 27
   flow_SLPM: 0.51
-  ch4_ppm: 2.81
+  ch4_ppm: 3.28
+  time_seconds: 300
 - index: 28
   flow_SLPM: 0.51
-  ch4_ppm: 2.91
+  ch4_ppm: 3.28
+  time_seconds: 450
 - index: 29
   flow_SLPM: 0.51
-  ch4_ppm: 3.01
+  ch4_ppm: 3.28
+  time_seconds: 600
 - index: 30
   flow_SLPM: 0.51
-  ch4_ppm: 3.11
+  ch4_ppm: 3.82
+  time_seconds: 60
 - index: 31
   flow_SLPM: 0.51
-  ch4_ppm: 3.21
+  ch4_ppm: 3.82
+  time_seconds: 150
 - index: 32
   flow_SLPM: 0.51
-  ch4_ppm: 3.31
+  ch4_ppm: 3.82
+  time_seconds: 300
 - index: 33
   flow_SLPM: 0.51
-  ch4_ppm: 3.41
+  ch4_ppm: 3.82
+  time_seconds: 450
 - index: 34
   flow_SLPM: 0.51
-  ch4_ppm: 3.51
+  ch4_ppm: 3.82
+  time_seconds: 600
 - index: 35
   flow_SLPM: 0.51
-  ch4_ppm: 3.61
+  ch4_ppm: 4.36
+  time_seconds: 60
 - index: 36
   flow_SLPM: 0.51
-  ch4_ppm: 3.71
+  ch4_ppm: 4.36
+  time_seconds: 150
 - index: 37
   flow_SLPM: 0.51
-  ch4_ppm: 3.81
+  ch4_ppm: 4.36
+  time_seconds: 300
 - index: 38
   flow_SLPM: 0.51
-  ch4_ppm: 3.91
+  ch4_ppm: 4.36
+  time_seconds: 450
 - index: 39
   flow_SLPM: 0.51
-  ch4_ppm: 4.01
+  ch4_ppm: 4.36
+  time_seconds: 600
 - index: 40
   flow_SLPM: 0.51
-  ch4_ppm: 4.11
+  ch4_ppm: 4.9
+  time_seconds: 60
 - index: 41
   flow_SLPM: 0.51
-  ch4_ppm: 4.21
+  ch4_ppm: 4.9
+  time_seconds: 150
 - index: 42
   flow_SLPM: 0.51
-  ch4_ppm: 4.3
+  ch4_ppm: 4.9
+  time_seconds: 300
 - index: 43
   flow_SLPM: 0.51
-  ch4_ppm: 4.4
+  ch4_ppm: 4.9
+  time_seconds: 450
 - index: 44
   flow_SLPM: 0.51
-  ch4_ppm: 4.5
-- index: 45
-  flow_SLPM: 0.51
-  ch4_ppm: 4.6
-- index: 46
-  flow_SLPM: 0.51
-  ch4_ppm: 4.7
-- index: 47
-  flow_SLPM: 0.51
-  ch4_ppm: 4.8
-- index: 48
-  flow_SLPM: 0.51
   ch4_ppm: 4.9
+  time_seconds: 600
+- index: 45
+  flow_SLPM: 0.01
+  ch4_ppm: 25000
+  time_seconds: 60
+- index: 46
+  flow_SLPM: 0.01
+  ch4_ppm: 25000
+  time_seconds: 150
+- index: 47
+  flow_SLPM: 0.01
+  ch4_ppm: 25000
+  time_seconds: 300
+- index: 48
+  flow_SLPM: 0.01
+  ch4_ppm: 25000
+  time_seconds: 450
 - index: 49
   flow_SLPM: 0.01
   ch4_ppm: 25000
+  time_seconds: 600
