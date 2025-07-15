@@ -116,9 +116,6 @@ class T700:
             48: "Ozone Generator Fraction"
         }
 
-
-
-
     def read_discrete_inputs(self):
         dateTime = datetime.now(timezone.utc)
 
@@ -387,4 +384,26 @@ class T700:
         except Exception as e:
             print(f"Error writing coil at address {address}: {e}")
             return False
+
+    # def run_sequence(self, cylinder, gas, concentration_ppm, duration_sec):
+    #     """
+    #     Write a single coil (boolean) value to the given address.
+    #     address: int - coil address
+    #     value: bool - True (set) or False (reset)
+    #     Returns the result object from pymodbus.
+    #     """
+    #     findIndex = f"C{cylinder}G{gas}C{concentration_ppm}"
+
+
+ 
+    #     try:
+    #         result = self.client.write_coil(address= address, value=True)
+    #         if result.isError():
+    #             print(f"Failed to write coil at address {address}")
+
+    #             return False
+    #         return True
+    #     except Exception as e:
+    #         print(f"Error writing coil at address {address}: {e}")
+    #         return False
 

@@ -1,4 +1,4 @@
-Gas-Diluent Schedule:
+cylinder:
 - index: 0
   flow_SLPM: 0.5
   ch4_ppm: 0.57

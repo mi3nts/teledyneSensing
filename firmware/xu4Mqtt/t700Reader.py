@@ -12,11 +12,11 @@ import sys
 import re 
 import traceback
 from pprint import pprint
+from t700.t700 import T700
 
 loopInterval = 10 
 hostIP       = "192.168.20.109"
 
-from t700 import T700
 
 def main(loopInterval,hostIP):
 
