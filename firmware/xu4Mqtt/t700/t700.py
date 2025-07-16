@@ -12,6 +12,7 @@ import sys
 import re 
 import traceback
 from pprint import pprint
+import yaml
 
 loopInterval = 10 
 hostIP       = "192.168.20.109"
@@ -184,9 +185,9 @@ class T700:
         dateTime = datetime.now(timezone.utc)
         try:
             result = self.client.read_input_registers(address=0, count=50)
-            print(result)
-            print(result.registers)
-            time.sleep(3)
+            # print(result)
+            # print(result.registers)
+            time.sleep(.1)
 
             if not result.isError():
                 regs = result.registers
@@ -360,7 +361,7 @@ class T700:
                 mSR.sensorFinisher(dateTime, self.sensorIDPreModbus + "CONTROL", control_info)  
                 time.sleep(0.1)
                 
-                return True, [resultStatus,resultControls]
+                return True, [resultStatus.bits,resultControls.bits]
             
         except ModbusException as e:
             print("[Error] Coils:", e)
@@ -385,25 +386,59 @@ class T700:
             print(f"Error writing coil at address {address}: {e}")
             return False
 
-    # def run_sequence(self, cylinder, gas, concentration_ppm, duration_sec):
-    #     """
-    #     Write a single coil (boolean) value to the given address.
-    #     address: int - coil address
-    #     value: bool - True (set) or False (reset)
-    #     Returns the result object from pymodbus.
-    #     """
-    #     findIndex = f"C{cylinder}G{gas}C{concentration_ppm}"
+
+    # ADD THESE TO T700 CLASS
+    def getSequenceIndex(*,conc, flowRate, time, cylinder):
+        cylinderFile = os.path.join("gasCylinders", cylinder+".yaml")
+        cylinderSequences = yaml.load(open(cylinderFile ),Loader=yaml.FullLoader)
+        # print(cylinderSequences)
+
+        for entry in cylinderSequences['cylinder']:
+            # print(entry)
+            if (entry["ch4_ppm"] == conc and
+                entry["flow_SLPM"] == flowRate and
+                entry["time_seconds"] == time):
+                print("Found Match: ", entry)
+                return True,entry["index"], entry
+        
+        print("No Match Found")
+        return False, -1, None
 
 
- 
-    #     try:
-    #         result = self.client.write_coil(address= address, value=True)
-    #         if result.isError():
-    #             print(f"Failed to write coil at address {address}")
+    def activateStandBy(self, monitor):
+        time.sleep(1)
+        print("Activating StandBy Mode")
+        status = monitor.write_coil(101, True)
+        if status:
+            print("StandBy Activated")   
+        time.sleep(1)
+        return True
 
-    #             return False
-    #         return True
-    #     except Exception as e:
-    #         print(f"Error writing coil at address {address}: {e}")
-    #         return False
+    def activatePurge(self, monitor,time=60):
+        time.sleep(1)
+        print("Purging for ", time, " seconds")
+        status = monitor.write_coil(100, True)
+        if status:
+            print("Purge Activated")   
 
+        self.continousRead(monitor, duration=time)
+
+        time.sleep(1)
+        return True
+
+    # Embed Run Sequence Here 
+    def runSequence(self, *, monitor, conc, flowRate, time, cylinder):
+        validity, sequenceIndex , sequenceEntry = self.getSequenceIndex(conc=conc, flowRate=flowRate, time=time, cylinder=cylinder)
+
+        if validity:
+            print("Activating: ",sequenceEntry)
+            status = monitor.write_coil(sequenceIndex, True)
+            if status:
+                print("Sequence Activated - Index: ", sequenceIndex, " - Entry: " , sequenceEntry)
+                time.sleep(1)
+                self.continousRead(monitor, duration=sequenceEntry["time_seconds"])
+            else:
+                print("Failed to Activate Sequence with index", sequenceIndex, " Activated: " , sequenceEntry)
+        
+
+        return validity, sequenceIndex, sequenceEntry
