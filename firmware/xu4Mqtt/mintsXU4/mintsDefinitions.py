@@ -126,8 +126,9 @@ if macAddress == "2ed3ff75af22":
 if macAddress == "ae5abeda5763":
     baseFolder                = "/Users/lakitha/"
 
-if macAddress == "3a6ace4e0074":
+if macAddress == "b6eace78111d":
     baseFolder                = "/Users/lakitha/"
+
 
 
 dataFolderReference       = baseFolder + "mintsData/reference"

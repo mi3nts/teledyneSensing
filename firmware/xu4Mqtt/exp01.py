@@ -35,7 +35,7 @@ def main(hostIP):
 
     time.sleep(1)
 
-    device.runSequence(monitor=device, conc=25000, flowRate=0.01, time=600, cylinder="cylinder01")
+    device.runSequence( conc=25000, flowRate=0.01, time=600, cylinder="cylinder01")
 
     device.activateStandByMode(device)
     device.continousRead(device)

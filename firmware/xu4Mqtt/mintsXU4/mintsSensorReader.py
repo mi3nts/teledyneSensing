@@ -1120,13 +1120,24 @@ def writeCSV(reader,keys,outputPath):
     directoryCheck(outputPath)
     csvWriter(outputPath,reader,keys)
 
+
 def directoryCheck(outputPath):
-    exists = os.path.isfile(outputPath)
-    directoryIn = os.path.dirname(outputPath)
-    if not os.path.exists(directoryIn):
-        print("Creating Folder @:" + directoryIn)
-        os.makedirs(directoryIn)
-    return exists
+    file_exists = os.path.isfile(outputPath)
+    directory = os.path.dirname(outputPath)
+
+    # print(f"[Path] {outputPath}")
+    # print(f"[Directory] {directory}")
+    # print(f"[File Exists] {file_exists}")
+
+    if directory:
+        if os.path.exists(directory):
+            if not os.path.isdir(directory):
+                raise NotADirectoryError(f"Expected a directory, but found something else at: {directory}")
+        else:
+            print(f"Creating folder at: {directory}")
+            os.makedirs(directory)
+
+    return file_exists
 
 def directoryCheck2(outputPath):
     isFile = os.path.isfile(outputPath)
