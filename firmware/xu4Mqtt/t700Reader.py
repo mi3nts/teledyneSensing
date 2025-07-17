@@ -23,7 +23,7 @@ def main(loopInterval, hostIP):
     time.sleep(1)
     monitor.activateStandByMode()
     time.sleep(1)
-    monitor.continousRead(loopInterval=loopInterval, duration=20)
+    monitor.continousRead(loopInterval=loopInterval, duration=60)
 
 if __name__ == "__main__":
     print("=============")

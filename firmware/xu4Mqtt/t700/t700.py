@@ -54,6 +54,8 @@ hostIP       = "192.168.20.109"
 # T700API001AOSLP
 # T700API001AOWRN
 # T700API001ASFSTS
+
+
 # T700API001ASFBIT
 # T700API001ASFWARN
 # T700API001BENCHCAL
@@ -68,12 +70,14 @@ hostIP       = "192.168.20.109"
 # T700API001CALRNG
 # T700API001CALSTS
 # T700API001CFGXFER
+
 # T700API001CNFGST
 # T700API001CYLGAS
 # T700API001DICNTL
 # T700API001DIGIN
 # T700API001DILDRV
 # T700API001DILFLW
+
 # T700API001DOCNTL
 # T700API001DOUT1
 # T700API001DOUT2
@@ -93,6 +97,7 @@ hostIP       = "192.168.20.109"
 # T700API001INSTR
 # T700API001LEVELCFG
 # T700API001LOGGER
+
 # T700API001MBRL1
 # T700API001MBRL2
 # T700API001MBRL3
@@ -112,6 +117,7 @@ hostIP       = "192.168.20.109"
 # T700API001OPTPARAM
 # T700API001OSINFO
 # T700API001PERMGAS
+
 # T700API001PHCAL
 # T700API001PORTGEN
 # T700API001PRESSCAL
@@ -121,6 +127,7 @@ hostIP       = "192.168.20.109"
 # T700API001REMOTE
 # T700API001SEQCFG
 # T700API001STEPCFG
+
 # T700API001STEPSTS
 # T700API001SVCOM1
 # T700API001SVCOM2
@@ -128,6 +135,7 @@ hostIP       = "192.168.20.109"
 # T700API001SYSCAL
 # T700API001SYSCFG
 # T700API001SYSINFO
+
 # T700API001SYSWARN
 # T700API001SYSWRN
 # T700API001SYSWRND
@@ -135,6 +143,7 @@ hostIP       = "192.168.20.109"
 # T700API001TAGLOGGER
 # T700API001TIMEFMT
 # T700API001TIMESYNC
+
 # T700API001UPDSTAT
 # T700API001UPLOAD
 # T700API001VALVECTL1
@@ -1521,7 +1530,6 @@ class T700:
 
                 o3GenConfig = OrderedDict([
                     ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),
-                    ("o3GenMode", self.o3GenMode),
                     ("o3Stability", self.o3Stability),
                     ("o3AdaptiveFilterActive", self.o3AdaptiveFilterActive),
                     ("o3GenDefaultSetpoint", self.o3GenDefaultSetpoint),
@@ -2116,14 +2124,7 @@ class T700:
 
             asfWarnings = OrderedDict([
                 ("dateTime", dateTime.strftime('%Y-%m-%d %H:%M:%S.%f')),                   
-                ("asfChassisWarning", self.asfChassisWarning),
                 ("asfValveboardWarning", self.asfValveboardWarning),
-                ("asfOpticalBoardWarning", self.asfOpticalBoardWarning),
-                ("asfMfcWarning", self.asfMfcWarning),
-                ("asfTemperatureWarning", self.asfTemperatureWarning),
-                ("asfFlowWarning", self.asfFlowWarning),
-                ("asfPressureWarning", self.asfPressureWarning),
-                ("asfHumidityWarning", self.asfHumidityWarning),
                 ("asfAnalogoutputWarning", self.asfAnalogoutputWarning),
             ])
             mSR.sensorFinisher(dateTime, self.sensorIDPreAPI + "ASFWARN1", asfWarnings)
