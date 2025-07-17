@@ -18,12 +18,12 @@ loopInterval = 10
 hostIP       = "192.168.20.109"
 
 def main(loopInterval, hostIP):
-    monitor = T700(host=hostIP)
 
+    monitor = T700(host=hostIP)
     time.sleep(1)
     monitor.activateStandByMode()
-    monitor.read_api()
-    # monitor.continousRead(loopInterval=10, duration=20)
+    time.sleep(1)
+    monitor.continousRead(loopInterval=loopInterval, duration=20)
 
 if __name__ == "__main__":
     print("=============")

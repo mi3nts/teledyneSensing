@@ -27,7 +27,7 @@ cylinder     = "cylinder01.yaml"
 
 
 
-def main(hostIP):
+def main(hostIP,loopInterval):
 
     time.sleep(1)
     print("Starting T700 Monitor on ", hostIP)
@@ -35,11 +35,12 @@ def main(hostIP):
 
     time.sleep(1)
 
-    device.runSequence( conc=25000, flowRate=0.01, time=600, cylinder="cylinder01")
+    device.runSequence(conc=25000, flowRate=0.01, time=600, cylinder="cylinder01")
 
-    device.activateStandByMode(device)
-    device.continousRead(device)
+    device.activateStandByMode()
 
+    device.continousRead(loopInterval=loopInterval) 
+    
 
 
 if __name__ == "__main__":
