@@ -22,6 +22,8 @@ Evaluate gas behavior and sensor response with the chamber **powered off** to pr
 - ✅ Time the cylinder is opened:  20.40.10 UTC Friday July 18, 2025 
 - ✅ Time the cylinder is closed:  20.42.10 UTC Friday July 18, 2025    
 
+**Notes:At High concentrations the gasera seems to struggle and read zeros.May need to manually remove these readings**
+
 ---
 
 ### Experiment 2: Chamber at Room Temperature
