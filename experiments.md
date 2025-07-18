@@ -19,8 +19,8 @@ Evaluate gas behavior and sensor response with the chamber **powered off** to pr
 3. Continue monitoring and recording data.
 
 **Manual Observations to Record:**
-- ✅ Time the cylinder is opened  
-- ✅ Time the cylinder is closed
+- ✅ Time the cylinder is opened:  20.40.10 UTC Friday July 18, 2025 
+- ✅ Time the cylinder is closed:  20.42.10 UTC Friday July 18, 2025    
 
 ---
 
