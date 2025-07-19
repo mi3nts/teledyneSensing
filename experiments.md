@@ -31,7 +31,7 @@ Evaluate gas behavior and sensor response with the chamber **powered off** to pr
 **Objective:**  
 Assess gas response with the chamber **powered on**, set to **room temperature and humidity conditions**:
 - Temperature: **20 °C**
-- Relative Humidity: **50%**
+- Relative Humidity: **40%**
 
 **Procedure:**
 1. Configure the chamber to maintain standard temperature and humidity.
