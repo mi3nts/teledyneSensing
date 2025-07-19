@@ -35,9 +35,10 @@ Assess gas response with the chamber **powered on**, set to **room temperature a
 
 **Procedure:**
 1. Configure the chamber to maintain standard temperature and humidity.
-2. Open **Cylinder 01** and inject gas into the chamber at **30 psig** for **2 minutes**.
+2. Open **Cylinder 01** and inject gas into the chamber at **25 psig** for **2 minutes**.
 3. Start and continue data collection.
 
 **Manual Observations to Record:**
-- ✅ Time the cylinder is opened  
-- ✅ Time the cylinder is closed
+- ✅ Time the cylinder is opened:  17.13.10 UTC Friday July 19, 2025 
+- ✅ Time the cylinder is closed:  17.15.10 UTC Friday July 19, 2025    
+
