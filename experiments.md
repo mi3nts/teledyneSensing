@@ -79,3 +79,32 @@ To assess the gas response with the environmental chamber **powered on and activ
 - ✅ **Chamber routine started:** 16:24:00 UTC  
   - ⚠️ Waited for gas equilibration, verified via reference methane sensor readings.
 
+Hot Stage 1 - Secondary Bursts - 1 min 
+- ✅ **Cylinder opened:** 16:36:20 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 16:37:20 UTC, Sunday, July 20, 2025  
+
+- ✅ **Cylinder opened:** 16:52:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 16:53:00 UTC, Sunday, July 20, 2025  
+
+- ✅ **Cylinder opened:** 17:06:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 17:07:00 UTC, Sunday, July 20, 2025  
+
+Cold Stage 1 - Secondary Bursts - 1 min 
+- ✅ **Cylinder opened:** 18:18:20 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 18:19:20 UTC, Sunday, July 20, 2025  
+
+Hot Stage 2 - Secondary Bursts - 1 min 
+- ✅ **Cylinder opened:** 18:50:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 18:51:00 UTC, Sunday, July 20, 2025  
+
+- ✅ **Cylinder opened:** 19:05:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 19:06:00 UTC, Sunday, July 20, 2025  
+
+- ✅ **Cylinder opened:** 19:20:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 19:21:00 UTC, Sunday, July 20, 2025  
+
+Cold Stage 2 - Secondary Bursts - 1 min 
+
+
+
+
