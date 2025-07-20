@@ -28,17 +28,54 @@ Evaluate gas behavior and sensor response with the chamber **powered off** to pr
 
 ### Experiment 2: Chamber at Room Temperature
 
+#### Exp 2.0 
 **Objective:**  
 Assess gas response with the chamber **powered on**, set to **room temperature and humidity conditions**:
 - Temperature: **20 °C**
 - Relative Humidity: **40%**
 
 **Procedure:**
-1. Configure the chamber to maintain standard temperature and humidity.
-2. Open **Cylinder 01** and inject gas into the chamber at **25 psig** for **2 minutes**.
-3. Start and continue data collection.
+1. Start data collection.
+2. Configure the chamber to maintain standard temperature and humidity.
+3. Open **Cylinder 01** and inject gas into the chamber at **25 psig** for **2 minutes**.
+4. Continue data collection.
 
 **Manual Observations to Record:**
-- ✅ Time the cylinder is opened:  17.13.10 UTC Friday July 19, 2025 
-- ✅ Time the cylinder is closed:  17.15.10 UTC Friday July 19, 2025    
+- ✅ Time the cylinder is opened:  17.13.10 UTC Saturday July 19, 2025 
+- ✅ Time the cylinder is closed:  17.15.10 UTC Saturday July 19, 2025    
+
+#### Exp 2.1 
+**Objective:**  
+Assess gas response with the chamber **powered on**, set to **room temperature and humidity conditions**:
+- Temperature: **20 °C**
+- Relative Humidity: **40%**
+
+**Procedure:**
+1. Start data collection.
+2. Configure the chamber to maintain standard temperature and humidity.
+3. Open **Cylinder 01** and inject gas into the chamber at **30 psig** for **2 minutes**.
+4. Continue data collection.
+
+**Manual Observations to Record:**
+- ✅ Time the cylinder is opened:  21.50.10 UTC Saturday July 19, 2025 
+- ✅ Time the cylinder is closed:  21.52.10 UTC Saturday July 19, 2025    
+
+#### Exp 3 
+
+**Objective:**  
+To assess the gas response with the environmental chamber **powered on and actively running a programmed routine** that spans a range of temperature and humidity conditions:
+- **Temperature Range:** -20 °C to 40 °C  
+- **Relative Humidity Range:** 20% to 90%
+
+**Procedure:**
+1. Start data collection.
+2. Open **Cylinder 01** and inject gas into the chamber at **30 psig** for **2 minutes**.
+3. Run the routing of the chamber to span environmental conditions.
+4. Continue data collection
+
+**Manual Observations:**  
+- ✅ **Cylinder opened:** 16:11:00 UTC, Sunday, July 20, 2025  
+- ✅ **Cylinder closed:** 16:13:00 UTC, Sunday, July 20, 2025  
+- ✅ **Chamber routine started:** 16:24:00 UTC  
+  - ⚠️ Waited for gas equilibration, verified via reference methane sensor readings.
 
