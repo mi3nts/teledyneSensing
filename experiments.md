@@ -105,6 +105,12 @@ Hot Stage 2 - Secondary Bursts - 1 min
 
 Cold Stage 2 - Secondary Bursts - 1 min 
 
+# Exp 4
+Objective:
+No Change in methane - Ambient Levels.
+Temperature Range: -20 °C to 40 °C
+Relative Humidity Range: 20% to 90%
+
 
 
 
